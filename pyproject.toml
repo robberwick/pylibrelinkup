@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylibrelinkup"
+version = "0.0.1"
+description = "A client for the Abbott LibreLinkUp API"
+readme = "README.md"
+authors = [
+  { name="Rob Berwick", email="rob.berwick@gmail.com" },
+]
+license = { file="LICENSE" }
+keywords = [
+    "librelink",
+    "librelinkup",
+    "abbott",
+    "diabetes",
+    "glucose",
+    "api",
+    "client",
+    "health",
+    "medical",
+    "blood-sugar",
+    "continuous-glucose-monitoring",
+    "cgm"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "requests>=2.31.0",
+  "pydantic>= 2.5.0",
+]
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = ["black"]
+test = ["pytest", "pytest-cov", "pytest-mock", "polyfactory", "responses"]
+
+[project.urls]
+Homepage = "https://github.com/robberwick/pylibrelinkup"
+Issues = "https://github.com/robberwick/pylibrelinkup/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]

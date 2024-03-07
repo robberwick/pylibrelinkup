@@ -1,0 +1,17 @@
+from .api_url import APIUrl
+
+
+class AuthenticationError(Exception):
+    """Raised when authentication fails."""
+
+    pass
+
+
+class RedirectError(Exception):
+    """Raised when a redirect is encountered during authentication. This is a signal to retry the request with the new region.
+    The new region is stored in the `region` attribute of the exception, which is an APIUrl enum value.
+    """
+
+    def __init__(self, region: APIUrl):
+        self.region = region
+        super().__init__(f"Redirected to {region}")
