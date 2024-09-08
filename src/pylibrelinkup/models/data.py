@@ -34,7 +34,7 @@ class Trend(IntEnum):
     UP_FAST: int = 5
 
 
-class GlucoseItem(BaseModel):
+class GlucoseMeasurement(BaseModel):
     """GlucoseMeasurement class to store glucose measurement data."""
 
     model_config = ConfigDict(
@@ -75,7 +75,7 @@ class GlucoseItem(BaseModel):
         return datetime_value
 
 
-class GlucoseItemTrend(GlucoseItem):
+class GlucoseMeasurementTrend(GlucoseMeasurement):
     trend_arrow: Trend
 
     def __str__(self):

@@ -34,9 +34,23 @@ print(patient_list)
 
 ### Getting Patient data
 
-Retrieve patient data using the `get_graph_data` method:
+Retrieve patient data using the `read` method:
 
 ```python
 patient = client.get_patient_list()[0]
-patient_data = client.get_graph_data(patient_id=patient.patient_id)
+patient_data = client.read(patient_id=patient.patient_id)
+```
+
+Get the latest glucose data:
+
+```python
+latest_glucose = patient_data.current
+print(latest_glucose)
+```
+
+Get the historical glucose data:
+
+```python
+historical_glucose = patient_data.history
+print(historical_glucose)
 ```
