@@ -66,12 +66,16 @@ class Client:
         data = r.json()
         return [Patient.model_validate(patient) for patient in data["data"]]
 
-    def get_graph_data(self, patient_id: UUID) -> ConnectionResponse:
-        """Requests and returns patient graph data"""
+    def _get_graph_data_json(self, patient_id: UUID) -> dict:
         r = requests.get(
             url=f"{self.api_url}/llu/connections/{patient_id}/graph",
             headers=self.HEADERS,
         )
         r.raise_for_status()
+        return r.json()
 
-        return ConnectionResponse.model_validate(r.json())
+    def read(self, patient_id: UUID) -> ConnectionResponse:
+        """Requests and returns patient data"""
+        response_json = self._get_graph_data_json(patient_id)
+
+        return ConnectionResponse.model_validate(response_json)

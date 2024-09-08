@@ -8,7 +8,7 @@ from pydantic import (
 from pydantic.alias_generators import to_camel
 
 from .config import AlarmRules
-from .data import GlucoseItem
+from .data import GlucoseMeasurement
 from .hardware import Sensor, PatientDevice, ActiveSensor
 
 
@@ -33,8 +33,8 @@ class Connection(BaseModel):
     uom: int
     sensor: Sensor
     alarm_rules: AlarmRules
-    glucose_measurement: GlucoseItem
-    glucose_item: GlucoseItem
+    glucose_measurement: GlucoseMeasurement
+    glucose_item: GlucoseMeasurement
     glucose_alarm: None
     patient_device: PatientDevice
     created: int
@@ -52,7 +52,7 @@ class Data(BaseModel):
 
     connection: Connection
     active_sensors: list[ActiveSensor] = Field(alias="activeSensors")
-    graph_data: list[GlucoseItem] = Field(alias="graphData")
+    graph_data: list[GlucoseMeasurement] = Field(alias="graphData")
 
 
 class Ticket(BaseModel):
@@ -83,3 +83,18 @@ class ConnectionResponse(BaseModel):
     status: int
     data: Data
     ticket: Ticket
+
+    @property
+    def current(self) -> GlucoseMeasurement:
+        """Returns the current glucose measurement."""
+        return self.data.connection.glucose_measurement
+
+    @property
+    def history(self) -> list[GlucoseMeasurement]:
+        """Returns the historical glucose measurements."""
+        return self.data.graph_data
+
+    @property
+    def raw(self):
+        """Returns the raw JSON data returned by the API."""
+        return self.data.model_dump_json()
