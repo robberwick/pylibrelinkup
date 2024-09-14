@@ -38,8 +38,10 @@ Retrieve patient data using the `read` method:
 
 ```python
 patient = client.get_patient_list()[0]
-patient_data = client.read(patient_id=patient.patient_id)
+patient_data = client.read(patient_identifier=patient.patient_id)
 ```
+
+The `read` method accepts a `patient_identifier` parameter in the form of a `UUID`, `str`, or `Patient` object.
 
 Get the latest glucose data:
 
