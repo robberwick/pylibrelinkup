@@ -3,33 +3,14 @@ import json
 import pytest
 import requests
 import responses
-from polyfactory.factories.pydantic_factory import ModelFactory
 
 from pylibrelinkup.client import Client, AuthenticationError
 from pylibrelinkup.api_url import APIUrl
-from pylibrelinkup.models.connection import ConnectionResponse
-from pylibrelinkup.models.data import Patient
 from pylibrelinkup.models.login import (
     LoginResponse,
 )
-
-
-class LoginResponseFactory(ModelFactory[LoginResponse]):
-    __model__ = LoginResponse
-
-
-class ConnectionResponseFactory(ModelFactory[ConnectionResponse]):
-    __model__ = ConnectionResponse
-
-
-class PatientFactory(ModelFactory[Patient]):
-    __model__ = Patient
-
-
-@pytest.fixture
-def mocked_responses():
-    with responses.RequestsMock() as rsps:
-        yield rsps
+from tests.conftest import mocked_responses
+from tests.factories import LoginResponseFactory
 
 
 @pytest.mark.parametrize("api_url", APIUrl)
