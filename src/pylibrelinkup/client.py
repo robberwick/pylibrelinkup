@@ -77,6 +77,9 @@ class Client:
 
     def read(self, patient_identifier: UUID | str | Patient) -> ConnectionResponse:
         """Requests and returns patient data"""
+        if self.token is None:
+            raise AuthenticationError("Client not authenticated")
+
         invalid_patient_identifier = "Invalid patient_identifier"
         patient_id: UUID | None = None
         if isinstance(patient_identifier, UUID):
