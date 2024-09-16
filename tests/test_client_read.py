@@ -5,9 +5,17 @@ import responses
 
 from pylibrelinkup.api_url import APIUrl
 from pylibrelinkup.client import Client
+from pylibrelinkup.exceptions import AuthenticationError
 from pylibrelinkup.models.connection import ConnectionResponse
 from tests.conftest import graph_response_json
 from tests.factories import PatientFactory
+
+
+def test_read_raises_authentication_error_for_unauthenticated_client():
+    """Test that the read method raises ValueError for an unauthenticated client."""
+    client = Client(email="parp", password="parp", api_url=APIUrl.EU)
+    with pytest.raises(AuthenticationError, match="Client not authenticated"):
+        client.read(UUID("12345678-1234-5678-1234-567812345678"))
 
 
 def test_read_returns_connection_response_for_valid_uuid(
@@ -24,6 +32,7 @@ def test_read_returns_connection_response_for_valid_uuid(
     )
 
     client = Client(email="parp", password="parp", api_url=APIUrl.US)
+    client.token = "not_a_token"
 
     result = client.read(patient_id)
 
@@ -48,6 +57,7 @@ def test_read_returns_connection_response_for_valid_patient(
     )
 
     client = Client(email="parp", password="parp", api_url=APIUrl.US)
+    client.token = "not_a_token"
 
     result = client.read(patient)
 
@@ -72,6 +82,7 @@ def test_read_returns_connection_response_for_valid_string(
     )
 
     client = Client(email="parp", password="parp", api_url=APIUrl.US)
+    client.token = "not_a_token"
 
     result = client.read(patient_id)
 
@@ -85,6 +96,7 @@ def test_read_returns_connection_response_for_valid_string(
 def test_read_raises_value_error_for_invalid_uuid_string(mocked_responses):
     """Test that the read method raises ValueError for an invalid UUID string."""
     client = Client(email="parp", password="parp", api_url=APIUrl.US)
+    client.token = "not_a_token"
 
     with pytest.raises(ValueError, match="Invalid patient_identifier"):
         client.read("i'm not a uuid")
@@ -93,6 +105,7 @@ def test_read_raises_value_error_for_invalid_uuid_string(mocked_responses):
 def test_read_raises_value_error_for_invalid_patient_id_type():
     """Test that the read method raises ValueError for an invalid patient_id type."""
     client = Client(email="parp", password="parp", api_url=APIUrl.EU2)
+    client.token = "not_a_token"
 
     with pytest.raises(ValueError, match="Invalid patient_identifier"):
         client.read(123456)
