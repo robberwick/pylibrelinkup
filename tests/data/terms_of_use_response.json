@@ -1,0 +1,15 @@
+{
+  "status": 4,
+  "data": {
+    "step": {
+      "type": "tou",
+      "componentName": "AcceptDocument",
+      "props": {
+        "reaccept": true,
+        "titleKey": "Common.termsO...uYW5kcm9pZCIsImV4cCI6MTcyNzI4MjI2OH0.ljyu3U22kDhINqNLX7hTxWWfBVN57_zR2jJayMDmYaA",
+        "expires": 1727282268,
+        "duration": 3600000
+      }
+    }
+  }
+}
