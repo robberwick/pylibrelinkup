@@ -7,7 +7,7 @@ import requests
 from pydantic import ValidationError
 
 from .api_url import APIUrl
-from .exceptions import AuthenticationError, RedirectError
+from .exceptions import AuthenticationError, RedirectError, TermsOfUseError
 from .models.connection import ConnectionResponse
 from .models.data import Patient
 from .models.login import LoginArgs, LoginResponse
@@ -52,10 +52,13 @@ class Client:
             data_dict = data.get("data", {})
             if data_dict.get("redirect", False):
                 raise RedirectError(APIUrl.from_string(data_dict["region"]))
-            else:
-                login_response = LoginResponse.model_validate(data)
-                self.token = login_response.data.authTicket.token
-                self.HEADERS.update({"authorization": "Bearer " + self.token})
+
+            if data_dict.get("step", {}).get("type") == "tou":
+                raise TermsOfUseError()
+
+            login_response = LoginResponse.model_validate(data)
+            self.token = login_response.data.authTicket.token
+            self.HEADERS.update({"authorization": "Bearer " + self.token})
 
         except ValidationError:
             raise AuthenticationError("Invalid login credentials")
