@@ -15,3 +15,10 @@ class RedirectError(Exception):
     def __init__(self, region: APIUrl):
         self.region = region
         super().__init__(f"Redirected to {region}")
+
+
+class TermsOfUseError(Exception):
+    """Raised when the user needs to accept terms of use."""
+
+    def __init__(self):
+        super().__init__("User needs to accept terms of use. ")

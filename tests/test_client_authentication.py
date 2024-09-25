@@ -6,6 +6,7 @@ import responses
 
 from pylibrelinkup.client import Client, AuthenticationError
 from pylibrelinkup.api_url import APIUrl
+from pylibrelinkup.exceptions import TermsOfUseError
 from pylibrelinkup.models.login import (
     LoginResponse,
 )
@@ -83,4 +84,23 @@ def test_authenticate_raises_error_on_http_error(mocked_responses, api_url: APIU
     client = Client(email="parp", password="parp", api_url=api_url)
 
     with pytest.raises(requests.exceptions.HTTPError):
+        client.authenticate()
+
+
+@pytest.mark.parametrize("api_url", APIUrl)
+def test_authenticate_raises_terms_of_use_error(
+    mocked_responses, api_url: APIUrl, terms_of_use_response_json
+):
+    """Test that the authenticate method raises a TermsOfUseError, when the user needs to accept terms of use."""
+
+    mocked_responses.add(
+        responses.POST,
+        f"{api_url.value}/llu/auth/login",
+        json=terms_of_use_response_json,
+        status=200,
+    )
+
+    client = Client(email="parp", password="parp", api_url=api_url)
+
+    with pytest.raises(TermsOfUseError):
         client.authenticate()

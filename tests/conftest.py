@@ -15,3 +15,9 @@ def mocked_responses():
 def graph_response_json():
     with open(Path(__file__).parent / "data" / "graph_response.json") as f:
         return json.loads(f.read())
+
+
+@pytest.fixture
+def terms_of_use_response_json():
+    with open(Path(__file__).parent / "data" / "terms_of_use_response.json") as f:
+        return json.loads(f.read())
