@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from typing import Union
 from uuid import UUID
 
 import requests
 from pydantic import ValidationError
 
 from .api_url import APIUrl
-from .exceptions import AuthenticationError, RedirectError
+from .exceptions import AuthenticationError, RedirectError, TermsOfUseError
 from .models.connection import ConnectionResponse
 from .models.data import Patient
 from .models.login import LoginArgs, LoginResponse
@@ -51,10 +52,13 @@ class Client:
             data_dict = data.get("data", {})
             if data_dict.get("redirect", False):
                 raise RedirectError(APIUrl.from_string(data_dict["region"]))
-            else:
-                login_response = LoginResponse.model_validate(data)
-                self.token = login_response.data.authTicket.token
-                self.HEADERS.update({"authorization": "Bearer " + self.token})
+
+            if data_dict.get("step", {}).get("type") == "tou":
+                raise TermsOfUseError()
+
+            login_response = LoginResponse.model_validate(data)
+            self.token = login_response.data.authTicket.token
+            self.HEADERS.update({"authorization": "Bearer " + self.token})
 
         except ValidationError:
             raise AuthenticationError("Invalid login credentials")
@@ -74,8 +78,25 @@ class Client:
         r.raise_for_status()
         return r.json()
 
-    def read(self, patient_id: UUID) -> ConnectionResponse:
+    def read(self, patient_identifier: UUID | str | Patient) -> ConnectionResponse:
         """Requests and returns patient data"""
+        if self.token is None:
+            raise AuthenticationError("Client not authenticated")
+
+        invalid_patient_identifier = "Invalid patient_identifier"
+        patient_id: UUID | None = None
+        if isinstance(patient_identifier, UUID):
+            patient_id = patient_identifier
+        elif isinstance(patient_identifier, str):
+            try:
+                patient_id = UUID(patient_identifier)
+            except ValueError as exc:
+                raise ValueError(invalid_patient_identifier) from exc
+        elif isinstance(patient_identifier, Patient):
+            patient_id = patient_identifier.patient_id
+        else:
+            raise ValueError(invalid_patient_identifier)
+
         response_json = self._get_graph_data_json(patient_id)
 
         return ConnectionResponse.model_validate(response_json)
