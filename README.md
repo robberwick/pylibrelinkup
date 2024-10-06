@@ -17,18 +17,18 @@ pip install pylibrelinkup
 First, you need to import the necessary modules, initialize the client, and authenticate with your LibreLinkUp credentials:
 
 ```python
-from pylibrelinkup.client import LibreLinkUpClient
+from pylibrelinkup.client import Client
 
-client = LibreLinkUpClient(username='your_username', password='your_password')
+client = Client(email='your_username', password='your_password')
 client.authenticate()
 ```
 
 ### Getting Patient List
 
-You can fetch the patient list using the `get_patient_list` method:
+You can fetch the list of patients using the `get_patients` method:
 
 ```python
-patient_list = client.get_patient_list()
+patient_list = client.get_patients()
 print(patient_list)
 ```
 
@@ -37,7 +37,7 @@ print(patient_list)
 Retrieve patient data using the `read` method:
 
 ```python
-patient = client.get_patient_list()[0]
+patient = patient_list[0]
 patient_data = client.read(patient_identifier=patient.patient_id)
 ```
 
