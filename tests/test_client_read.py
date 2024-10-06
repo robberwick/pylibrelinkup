@@ -109,3 +109,28 @@ def test_read_raises_value_error_for_invalid_patient_id_type():
 
     with pytest.raises(ValueError, match="Invalid patient_identifier"):
         client.read(123456)
+
+
+def test_read_response_no_sd_returns_connection_response(
+    mocked_responses, graph_response_no_sd_json
+):
+    """Test that the read method returns ConnectionResponse for a valid UUID."""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+
+    mocked_responses.add(
+        responses.GET,
+        f"{APIUrl.US.value}/llu/connections/{patient_id}/graph",
+        json=graph_response_no_sd_json,
+        status=200,
+    )
+
+    client = Client(email="parp", password="parp", api_url=APIUrl.US)
+    client.token = "not_a_token"
+
+    result = client.read(patient_id)
+
+    assert isinstance(result, ConnectionResponse)
+    assert (
+        str(result.data.connection.id)
+        == graph_response_no_sd_json["data"]["connection"]["id"]
+    )
