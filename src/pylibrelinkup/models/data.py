@@ -142,4 +142,4 @@ class Std(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
     )
-    sd: bool
+    sd: bool | None = None
