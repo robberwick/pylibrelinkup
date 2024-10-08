@@ -17,9 +17,9 @@ pip install pylibrelinkup
 First, you need to import the necessary modules, initialize the client, and authenticate with your LibreLinkUp credentials:
 
 ```python
-from pylibrelinkup.client import Client
+from pylibrelinkup import PyLibreLinkUp
 
-client = Client(email='your_username', password='your_password')
+client = PyLibreLinkUp(email='your_username', password='your_password')
 client.authenticate()
 ```
 

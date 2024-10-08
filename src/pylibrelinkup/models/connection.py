@@ -11,6 +11,8 @@ from .config import AlarmRules
 from .data import GlucoseMeasurement
 from .hardware import Sensor, PatientDevice, ActiveSensor
 
+__all__ = ["ConnectionResponse"]
+
 
 class Connection(BaseModel):
     """Connection class to store connection data."""
