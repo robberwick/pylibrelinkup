@@ -12,9 +12,11 @@ from .models.connection import ConnectionResponse
 from .models.data import Patient
 from .models.login import LoginArgs, LoginResponse
 
+__all__ = ["PyLibreLinkUp"]
 
-class Client:
-    """Client class to request data from the LibreLinkUp API."""
+
+class PyLibreLinkUp:
+    """PyLibreLinkUp class to request data from the LibreLinkUp API."""
 
     email: str
     password: str
@@ -81,7 +83,7 @@ class Client:
     def read(self, patient_identifier: UUID | str | Patient) -> ConnectionResponse:
         """Requests and returns patient data"""
         if self.token is None:
-            raise AuthenticationError("Client not authenticated")
+            raise AuthenticationError("PyLibreLinkUp not authenticated")
 
         invalid_patient_identifier = "Invalid patient_identifier"
         patient_id: UUID | None = None

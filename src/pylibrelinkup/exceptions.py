@@ -1,5 +1,7 @@
 from .api_url import APIUrl
 
+__all__ = ["AuthenticationError", "RedirectError", "TermsOfUseError"]
+
 
 class AuthenticationError(Exception):
     """Raised when authentication fails."""
