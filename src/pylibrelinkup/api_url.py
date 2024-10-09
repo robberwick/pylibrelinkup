@@ -3,6 +3,8 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Type, cast
 
+__all__ = ["APIUrl"]
+
 
 class APIUrl(StrEnum):
     EU = "https://api-eu.libreview.io"
