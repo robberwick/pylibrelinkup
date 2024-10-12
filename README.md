@@ -17,9 +17,9 @@ pip install pylibrelinkup
 First, you need to import the necessary modules, initialize the client, and authenticate with your LibreLinkUp credentials:
 
 ```python
-from pylibrelinkup.client import Client
+from pylibrelinkup import PyLibreLinkUp
 
-client = Client(email='your_username', password='your_password')
+client = PyLibreLinkUp(email='your_username', password='your_password')
 client.authenticate()
 ```
 
@@ -55,4 +55,19 @@ Get the historical glucose data:
 ```python
 historical_glucose = patient_data.history
 print(historical_glucose)
+```
+
+full example:
+
+```python
+from pylibrelinkup import PyLibreLinkUp
+
+client = PyLibreLinkUp(email='your_username', password='your_password')
+client.authenticate()
+patient_list = client.get_patients()
+print(patient_list)
+patient = patient_list[0]
+patient_data = client.read(patient_identifier=patient.patient_id)
+print(f"Current glucose: {patient_data.current}")
+print(f"Historical glucose: {patient_data.history}")
 ```

@@ -4,9 +4,7 @@ import pytest
 import requests
 import responses
 
-from pylibrelinkup.client import Client, AuthenticationError
-from pylibrelinkup.api_url import APIUrl
-from pylibrelinkup.exceptions import TermsOfUseError
+from pylibrelinkup import PyLibreLinkUp, APIUrl, AuthenticationError, TermsOfUseError
 from pylibrelinkup.models.login import (
     LoginResponse,
 )
@@ -26,7 +24,7 @@ def test_authenticate_raises_error_on_incorrect_login(
         status=200,
     )
 
-    client = Client(email="parp", password="parp", api_url=api_url)
+    client = PyLibreLinkUp(email="parp", password="parp", api_url=api_url)
 
     with pytest.raises(AuthenticationError):
         client.authenticate()
@@ -46,7 +44,7 @@ def test_authenticate_sets_token_on_correct_login(mocked_responses, api_url: API
         status=200,
     )
 
-    client = Client(email="parp", password="parp", api_url=api_url)
+    client = PyLibreLinkUp(email="parp", password="parp", api_url=api_url)
 
     client.authenticate()
 
@@ -65,7 +63,7 @@ def test_authenticate_raises_error_on_invalid_response(
         status=200,
     )
 
-    client = Client(email="parp", password="parp", api_url=api_url)
+    client = PyLibreLinkUp(email="parp", password="parp", api_url=api_url)
 
     with pytest.raises(AuthenticationError):
         client.authenticate()
@@ -81,7 +79,7 @@ def test_authenticate_raises_error_on_http_error(mocked_responses, api_url: APIU
         status=401,
     )
 
-    client = Client(email="parp", password="parp", api_url=api_url)
+    client = PyLibreLinkUp(email="parp", password="parp", api_url=api_url)
 
     with pytest.raises(requests.exceptions.HTTPError):
         client.authenticate()
@@ -100,7 +98,7 @@ def test_authenticate_raises_terms_of_use_error(
         status=200,
     )
 
-    client = Client(email="parp", password="parp", api_url=api_url)
+    client = PyLibreLinkUp(email="parp", password="parp", api_url=api_url)
 
     with pytest.raises(TermsOfUseError):
         client.authenticate()
