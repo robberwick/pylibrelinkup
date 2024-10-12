@@ -56,3 +56,18 @@ Get the historical glucose data:
 historical_glucose = patient_data.history
 print(historical_glucose)
 ```
+
+full example:
+
+```python
+from pylibrelinkup import PyLibreLinkUp
+
+client = PyLibreLinkUp(email='your_username', password='your_password')
+client.authenticate()
+patient_list = client.get_patients()
+print(patient_list)
+patient = patient_list[0]
+patient_data = client.read(patient_identifier=patient.patient_id)
+print(f"Current glucose: {patient_data.current}")
+print(f"Historical glucose: {patient_data.history}")
+```
