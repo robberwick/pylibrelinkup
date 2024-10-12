@@ -34,8 +34,11 @@ class Patient(BaseModel):
     first_name: str
     last_name: str
 
+    def __repr__(self):
+        return f"{self.first_name} {self.last_name}: {self.patient_id}"
+
     def __str__(self):
-        return f"{self.first_name} {self.last_name}: {self.id}"
+        return f"{self.first_name} {self.last_name}: {self.patient_id}"
 
 
 class Trend(IntEnum):
