@@ -13,6 +13,12 @@ from tests.factories import LoginResponseFactory
 
 
 @pytest.mark.parametrize("api_url", APIUrl)
+def test_client_uses_correct_api_url_default():
+    """Test that the client uses the correct API URL by default."""
+    client = PyLibreLinkUp(email="parp", password="parp")
+    assert client.api_url == APIUrl.US.value
+
+
 def test_authenticate_raises_error_on_incorrect_login(
     mocked_responses, api_url: APIUrl
 ):
