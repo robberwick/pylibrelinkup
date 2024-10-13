@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from uuid import UUID
 
 import requests
@@ -19,33 +20,36 @@ from .models.login import LoginArgs, LoginResponse
 __all__ = ["PyLibreLinkUp"]
 
 
+HEADERS: dict[str, str] = {
+    "accept-encoding": "gzip",
+    "cache-control": "no-cache",
+    "connection": "Keep-Alive",
+    "content-type": "application/json",
+    "product": "llu.android",
+    "version": "4.11.0",
+}
+
+
 class PyLibreLinkUp:
     """PyLibreLinkUp class to request data from the LibreLinkUp API."""
 
     email: str
     password: str
     token: str | None
-
-    HEADERS = {
-        "accept-encoding": "gzip",
-        "cache-control": "no-cache",
-        "connection": "Keep-Alive",
-        "content-type": "application/json",
-        "product": "llu.android",
-        "version": "4.7.0",
-    }
+    account_id_hash: str | None
 
     def __init__(self, email: str, password: str, api_url: APIUrl = APIUrl.US):
         self.login_args: LoginArgs = LoginArgs(email=email, password=password)
         self.email = email or ""
         self.password = password or ""
         self.token = None
+        self.account_id_hash = None
         self.api_url: str = api_url.value
 
     def authenticate(self) -> None:
         r = requests.post(
             url=f"{self.api_url}/llu/auth/login",
-            headers=self.HEADERS,
+            headers=self._get_headers(),
             json=self.login_args.model_dump(),
         )
         r.raise_for_status()
@@ -64,15 +68,30 @@ class PyLibreLinkUp:
 
         try:
             login_response = LoginResponse.model_validate(data)
-            self.token = login_response.data.authTicket.token
-            self.HEADERS.update({"authorization": "Bearer " + self.token})
+            self._set_token(login_response.data.authTicket.token)
+            self._set_account_id_hash(login_response.data.user.id)
 
         except ValidationError:
             raise AuthenticationError("Invalid login credentials")
 
+    def _set_token(self, token: str):
+        """Saves the token for future requests."""
+        self.token = token
+
+    def _get_headers(self) -> dict:
+        """Returns the headers for the request."""
+        headers = HEADERS.copy()
+        if self.token:
+            headers.update({"authorization": "Bearer " + self.token})
+        if self.account_id_hash:
+            headers.update({"account-id": self.account_id_hash})
+        return headers
+
     def get_patients(self) -> list[Patient]:
         """Requests and returns patient data"""
-        r = requests.get(url=f"{self.api_url}/llu/connections", headers=self.HEADERS)
+        r = requests.get(
+            url=f"{self.api_url}/llu/connections", headers=self._get_headers()
+        )
         r.raise_for_status()
         data = r.json()
         return [Patient.model_validate(patient) for patient in data["data"]]
@@ -80,7 +99,7 @@ class PyLibreLinkUp:
     def _get_graph_data_json(self, patient_id: UUID) -> dict:
         r = requests.get(
             url=f"{self.api_url}/llu/connections/{patient_id}/graph",
-            headers=self.HEADERS,
+            headers=self._get_headers(),
         )
         r.raise_for_status()
         return r.json()
@@ -107,3 +126,7 @@ class PyLibreLinkUp:
         response_json = self._get_graph_data_json(patient_id)
 
         return ConnectionResponse.model_validate(response_json)
+
+    def _set_account_id_hash(self, account_id: str):
+        """Saves the account_id_hash for future requests."""
+        self.account_id_hash = hashlib.sha256(account_id.encode()).hexdigest()
