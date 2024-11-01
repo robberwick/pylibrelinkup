@@ -52,7 +52,7 @@ class PyLibreLinkUp:
         try:
             data_dict = data.get("data", {})
             if data_dict.get("redirect", False):
-                raise RedirectError(APIUrl.from_string(data_dict["region"]))
+                raise RedirectError(APIUrl.from_string(data_dict["region"].upper()))
 
             if data_dict.get("step", {}).get("type") == "tou":
                 raise TermsOfUseError()
