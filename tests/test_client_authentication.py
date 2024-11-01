@@ -4,7 +4,13 @@ import pytest
 import requests
 import responses
 
-from pylibrelinkup import PyLibreLinkUp, APIUrl, AuthenticationError, TermsOfUseError
+from pylibrelinkup import (
+    PyLibreLinkUp,
+    APIUrl,
+    AuthenticationError,
+    TermsOfUseError,
+    RedirectError,
+)
 from pylibrelinkup.models.login import (
     LoginResponse,
 )
@@ -96,4 +102,20 @@ def test_authenticate_raises_terms_of_use_error(
     )
 
     with pytest.raises(TermsOfUseError):
+        pylibrelinkup_client.client.authenticate()
+
+
+def test_redirection_response_raises_redirect_error(
+    mocked_responses, pylibrelinkup_client, redirect_response_json
+):
+    """Test that the authenticate method raises a RedirectError, when the user is redirected to a different region."""
+
+    mocked_responses.add(
+        responses.POST,
+        f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
+        json=redirect_response_json,
+        status=200,
+    )
+
+    with pytest.raises(RedirectError):
         pylibrelinkup_client.client.authenticate()
