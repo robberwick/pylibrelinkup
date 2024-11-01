@@ -21,7 +21,8 @@ class APIUrl(StrEnum):
 
     @classmethod
     def from_string(cls: Type[APIUrl], value: str) -> APIUrl:
+        member: APIUrl
         for member in cls:
-            if member.lower() == value.lower():
+            if member.name.lower() == value.lower():
                 return cast(APIUrl, member)
         raise ValueError(f"{value} is not a valid {cls.__name__}")
