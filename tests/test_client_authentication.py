@@ -11,6 +11,7 @@ from pylibrelinkup import (
     TermsOfUseError,
     RedirectError,
 )
+from pylibrelinkup.exceptions import PrivacyPolicyError
 from pylibrelinkup.models.login import (
     LoginResponse,
 )
@@ -102,6 +103,22 @@ def test_authenticate_raises_terms_of_use_error(
     )
 
     with pytest.raises(TermsOfUseError):
+        pylibrelinkup_client.client.authenticate()
+
+
+def test_authenticate_raises_privacy_policy_error(
+    mocked_responses, pylibrelinkup_client, privacy_policy_response_json
+):
+    """Test that the authenticate method raises a PrivacyPolicyError, when the user needs to accept the privacy policy."""
+
+    mocked_responses.add(
+        responses.POST,
+        f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
+        json=privacy_policy_response_json,
+        status=200,
+    )
+
+    with pytest.raises(PrivacyPolicyError):
         pylibrelinkup_client.client.authenticate()
 
 
