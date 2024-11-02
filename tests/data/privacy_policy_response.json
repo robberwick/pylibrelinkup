@@ -1,0 +1,24 @@
+{
+  "status": 4,
+  "data": {
+    "step": {
+      "type": "pp",
+      "componentName": "AcceptDocument",
+      "props": {
+        "reaccept": true,
+        "titleKey": "Common.privacyPolicy",
+        "type": "pp"
+      }
+    },
+    "user": {
+      "accountType": "pat",
+      "country": "CA",
+      "uiLanguage": "fr-CA"
+    },
+    "authTicket": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZGFjNDk2LWQyNGUtMTFlYy04ZTVkLTAyNDJhYzExMDAwMiIsImZpcnN0TmFtZSI6IkhhbGltZSBTZWxjdWsiLCJsYXN0TmFtZSI6Iktla2VjIiwiY291bnRyeSI6IkRFIiwicmVnaW9uIjoiZXUiLCJyb2xlIjoicGF0aWVudCIsInVuaXRzIjoxLCJwcmFjdGljZXMiOltdLCJjIjoxLCJzIjoibGx1LmFuZHJvaWQiLCJleHAiOjE2Njg2OTIzNTl9.LK8Ejr2IDKGM7oiObVYMHC8HV2bPcv6obt7UiEFXXXX",
+      "expires": 1730567336,
+      "duration": 3600000
+    }
+  }
+}

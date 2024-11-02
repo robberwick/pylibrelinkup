@@ -24,3 +24,10 @@ class TermsOfUseError(Exception):
 
     def __init__(self):
         super().__init__("User needs to accept terms of use. ")
+
+
+class PrivacyPolicyError(Exception):
+    """Raised when the user needs to accept the privacy policy."""
+
+    def __init__(self):
+        super().__init__("User needs to accept the privacy policy. ")
