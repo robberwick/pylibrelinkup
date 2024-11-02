@@ -6,7 +6,12 @@ import requests
 from pydantic import ValidationError
 
 from .api_url import APIUrl
-from .exceptions import AuthenticationError, RedirectError, TermsOfUseError
+from .exceptions import (
+    AuthenticationError,
+    RedirectError,
+    TermsOfUseError,
+    PrivacyPolicyError,
+)
 from .models.connection import ConnectionResponse
 from .models.data import Patient
 from .models.login import LoginArgs, LoginResponse
@@ -46,17 +51,18 @@ class PyLibreLinkUp:
         r.raise_for_status()
         data = r.json()
         # Response to login can either be a request to use a different regional host, just successful, or a request
-        # to first accept terms.
-        # Here we handle the first two cases.
-        # TODO: Handle the case where the user needs to accept terms.
-        try:
-            data_dict = data.get("data", {})
-            if data_dict.get("redirect", False):
-                raise RedirectError(APIUrl.from_string(data_dict["region"].upper()))
+        # to accept terms or privacy policy.
+        data_dict = data.get("data", {})
+        if data_dict.get("redirect", False):
+            raise RedirectError(APIUrl.from_string(data_dict["region"].upper()))
 
-            if data_dict.get("step", {}).get("type") == "tou":
+        match data_dict.get("step", {}).get("type"):
+            case "tou":
                 raise TermsOfUseError()
+            case "pp":
+                raise PrivacyPolicyError()
 
+        try:
             login_response = LoginResponse.model_validate(data)
             self.token = login_response.data.authTicket.token
             self.HEADERS.update({"authorization": "Bearer " + self.token})
