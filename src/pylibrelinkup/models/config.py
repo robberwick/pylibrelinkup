@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 from pylibrelinkup.models.data import H, F, Nd, Std, L
@@ -16,7 +16,7 @@ class AlarmRules(BaseModel):
         from_attributes=True,
     )
 
-    c: bool
+    c: bool = Field(default=False)
     h: H
     f: F
     l: L
