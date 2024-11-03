@@ -66,11 +66,10 @@ class PyLibreLinkUp:
                 raise EmailVerificationError()
 
         try:
-            login_response = LoginResponse.model_validate(data)
-            self.token = login_response.data.authTicket.token
+            self.token = data["data"]["authTicket"]["token"]
             self.HEADERS.update({"authorization": "Bearer " + self.token})
 
-        except ValidationError:
+        except KeyError:
             raise AuthenticationError("Invalid login credentials")
 
     def get_patients(self) -> list[Patient]:
