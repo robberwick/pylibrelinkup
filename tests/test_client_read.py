@@ -128,3 +128,27 @@ def test_read_response_no_sd_returns_connection_response(
         str(result.data.connection.id)
         == graph_response_no_sd_json["data"]["connection"]["id"]
     )
+
+
+def test_read_response_no_alarm_rules_c_returns_connection_response(
+    mocked_responses, graph_response_no_alarm_rules_c_json, pylibrelinkup_client
+):
+    """Test that the read method returns ConnectionResponse when no alarm_rules.c key is present in llu api response data."""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+
+    mocked_responses.add(
+        responses.GET,
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        json=graph_response_no_alarm_rules_c_json,
+        status=200,
+    )
+
+    pylibrelinkup_client.client.token = "not_a_token"
+
+    result = pylibrelinkup_client.client.read(patient_id)
+
+    assert isinstance(result, ConnectionResponse)
+    assert (
+        str(result.data.connection.id)
+        == graph_response_no_alarm_rules_c_json["data"]["connection"]["id"]
+    )

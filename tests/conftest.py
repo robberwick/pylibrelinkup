@@ -56,6 +56,14 @@ def email_verification_response_json():
         return json.loads(f.read())
 
 
+@pytest.fixture
+def graph_response_no_alarm_rules_c_json():
+    with open(
+        Path(__file__).parent / "data" / "graph_response_no_alarm_rules_c.json"
+    ) as f:
+        return json.loads(f.read())
+
+
 @dataclass
 class PyLibreLinkUpClientFixture:
     client: PyLibreLinkUp

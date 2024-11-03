@@ -1,0 +1,259 @@
+{
+  "status": 0,
+  "data": {
+    "connection": {
+      "id": "53a2a8d5-3864-4519-af47-496becf9a17a",
+      "patientId": "9dfd0d64-4863-4775-9438-712fa68787df",
+      "country": "DE",
+      "status": 2,
+      "firstName": "John",
+      "lastName": "Doe",
+      "targetLow": 70,
+      "targetHigh": 130,
+      "uom": 1,
+      "sensor": {
+        "deviceId": "",
+        "sn": "XXXXXXXXXX",
+        "a": 1652400270,
+        "w": 60,
+        "pt": 4
+      },
+      "alarmRules": {
+        "h": {
+          "on": true,
+          "th": 130,
+          "thmm": 7.2,
+          "d": 1440,
+          "f": 0.1
+        },
+        "f": {
+          "th": 55,
+          "thmm": 3,
+          "d": 30,
+          "tl": 10,
+          "tlmm": 0.6
+        },
+        "l": {
+          "on": true,
+          "th": 70,
+          "thmm": 3.9,
+          "d": 1440,
+          "tl": 10,
+          "tlmm": 0.6
+        },
+        "nd": {
+          "i": 20,
+          "r": 5,
+          "l": 6
+        },
+        "p": 5,
+        "r": 5,
+        "std": {}
+      },
+      "glucoseMeasurement": {
+        "FactoryTimestamp": "5/21/2022 1:38:50 PM",
+        "Timestamp": "5/21/2022 3:38:50 PM",
+        "type": 1,
+        "ValueInMgPerDl": 91,
+        "TrendArrow": 3,
+        "TrendMessage": null,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 91,
+        "isHigh": false,
+        "isLow": false
+      },
+      "glucoseItem": {
+        "FactoryTimestamp": "5/21/2022 1:38:50 PM",
+        "Timestamp": "5/21/2022 3:38:50 PM",
+        "type": 1,
+        "ValueInMgPerDl": 91,
+        "TrendArrow": 3,
+        "TrendMessage": null,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 91,
+        "isHigh": false,
+        "isLow": false
+      },
+      "glucoseAlarm": null,
+      "patientDevice": {
+        "did": "xxxxxxx",
+        "dtid": 40068,
+        "v": "3.3.1",
+        "ll": 65,
+        "hl": 130,
+        "u": 1653016896,
+        "fixedLowAlarmValues": {
+          "mgdl": 60,
+          "mmoll": 3.3
+        },
+        "alarms": false
+      },
+      "created": 1652399545
+    },
+    "activeSensors": [
+      {
+        "sensor": {
+          "deviceId": "xxxxxx",
+          "sn": "xxxxx",
+          "a": 1652400270,
+          "w": 60,
+          "pt": 4
+        },
+        "device": {
+          "did": "xxxxxx",
+          "dtid": 40068,
+          "v": "3.3.1",
+          "ll": 65,
+          "hl": 130,
+          "u": 1653016896,
+          "fixedLowAlarmValues": {
+            "mgdl": 60,
+            "mmoll": 3.3
+          },
+          "alarms": false
+        }
+      },
+      {
+        "sensor": {
+          "deviceId": "xxxxx",
+          "sn": "xxxxxx",
+          "a": 1652399154,
+          "w": 60,
+          "pt": 4
+        },
+        "device": {
+          "did": "xxxxxxxxx",
+          "dtid": 40068,
+          "v": "3.3.1",
+          "ll": 70,
+          "hl": 250,
+          "u": 1652399060,
+          "fixedLowAlarmValues": {
+            "mgdl": 60,
+            "mmoll": 3.3
+          },
+          "alarms": false
+        }
+      },
+      {
+        "sensor": {
+          "deviceId": "xxxxx",
+          "sn": "xxxxx",
+          "a": 1652391830,
+          "w": 60,
+          "pt": 4
+        },
+        "device": {
+          "did": "xxxxx",
+          "dtid": 40068,
+          "v": "3.3.1",
+          "ll": 70,
+          "hl": 250,
+          "u": 1652396851,
+          "fixedLowAlarmValues": {
+            "mgdl": 60,
+            "mmoll": 3.3
+          },
+          "alarms": false
+        }
+      }
+    ],
+    "graphData": [
+      {
+        "FactoryTimestamp": "5/21/2022 1:39:50 AM",
+        "Timestamp": "5/21/2022 3:39:50 AM",
+        "type": 0,
+        "ValueInMgPerDl": 117,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 117,
+        "isHigh": false,
+        "isLow": false
+      },
+      {
+        "FactoryTimestamp": "5/21/2022 1:44:51 AM",
+        "Timestamp": "5/21/2022 3:44:51 AM",
+        "type": 0,
+        "ValueInMgPerDl": 115,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 115,
+        "isHigh": false,
+        "isLow": false
+      },
+      {
+        "FactoryTimestamp": "5/21/2022 1:49:50 AM",
+        "Timestamp": "5/21/2022 3:49:50 AM",
+        "type": 0,
+        "ValueInMgPerDl": 115,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 115,
+        "isHigh": false,
+        "isLow": false
+      },
+      {
+        "FactoryTimestamp": "5/21/2022 1:54:51 AM",
+        "Timestamp": "5/21/2022 3:54:51 AM",
+        "type": 0,
+        "ValueInMgPerDl": 116,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 116,
+        "isHigh": false,
+        "isLow": false
+      },
+      {
+        "FactoryTimestamp": "5/21/2022 1:59:50 AM",
+        "Timestamp": "5/21/2022 3:59:50 AM",
+        "type": 0,
+        "ValueInMgPerDl": 116,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 116,
+        "isHigh": false,
+        "isLow": false
+      },
+      {
+        "FactoryTimestamp": "5/21/2022 2:04:50 AM",
+        "Timestamp": "5/21/2022 4:04:50 AM",
+        "type": 0,
+        "ValueInMgPerDl": 118,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 118,
+        "isHigh": false,
+        "isLow": false
+      },
+      {
+        "FactoryTimestamp": "5/21/2022 2:09:50 AM",
+        "Timestamp": "5/21/2022 4:09:50 AM",
+        "type": 0,
+        "ValueInMgPerDl": 118,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 118,
+        "isHigh": false,
+        "isLow": false
+      },
+      {
+        "FactoryTimestamp": "5/21/2022 2:14:51 AM",
+        "Timestamp": "5/21/2022 4:14:51 AM",
+        "type": 0,
+        "ValueInMgPerDl": 115,
+        "MeasurementColor": 1,
+        "GlucoseUnits": 1,
+        "Value": 115,
+        "isHigh": false,
+        "isLow": false
+      }
+    ]
+  },
+  "ticket": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZGFjNDk2LWQyNGUtMTFlYy04ZTVkLTAyNDJhYzExMDAwMiIsImZpcnN0TmFtZSI6IkhhbGltZSBTZWxjdWsiLCJsYXN0TmFtZSI6Iktla2VjIiwiY291bnRyeSI6IkRFIiwicmVnaW9uIjoiZXUiLCJyb2xlIjoicGF0aWVudCIsInVuaXRzIjoxLCJwcmFjdGljZXMiOltdLCJjIjoxLCJzIjoibGx1LmFuZHJvaWQiLCJleHAiOjE2Njg2OTIzNTl9.LK8Ejr2IDKGM7oiObVYMHC8HV2bPcv6obt7UiEFXXXX",
+    "expires": 1668692359,
+    "duration": 15552000000
+  }
+}
