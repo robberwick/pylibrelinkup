@@ -1,0 +1,65 @@
+{
+  "status": 0,
+  "data": {
+    "user": {
+      "id": "xx",
+      "firstName": "xx",
+      "lastName": "xx",
+      "email": "xx",
+      "country": "CA",
+      "uiLanguage": "en",
+      "communicationLanguage": "en",
+      "accountType": "pat",
+      "uom": "0",
+      "dateFormat": "2",
+      "timeFormat": "2",
+      "emailDay": [
+        1
+      ],
+      "system": {
+        "messages": {
+          "appReviewBanner": 1730575099,
+          "firstUsePhoenix": 1730575050,
+          "firstUsePhoenixReportsDataMerged": 1730575050,
+          "lluNewFeatureModal": 1730575069,
+          "lluOnboarding": 1730575088,
+          "lvWebPostRelease": "3.19.10"
+        }
+      },
+      "details": {},
+      "twoFactor": {
+        "primaryMethod": "",
+        "primaryValue": "",
+        "secondaryMethod": "",
+        "secondaryValue": ""
+      },
+      "created": 1730625555,
+      "lastLogin": 1730629766,
+      "programs": {},
+      "dateOfBirth": 29894400,
+      "practices": {},
+      "devices": {},
+      "consents": {
+        "llu": {
+          "policyAccept": 1730575050,
+          "touAccept": 1730575050
+        }
+      }
+    },
+    "messages": {
+      "unread": 0
+    },
+    "notifications": {
+      "unresolved": 0
+    },
+    "authTicket": {
+      "token": "parp",
+      "expires": 1746127527,
+      "duration": 15552000000
+    },
+    "invitations": [
+      "cxxx"
+    ],
+    "trustedDeviceToken": ""
+  }
+}

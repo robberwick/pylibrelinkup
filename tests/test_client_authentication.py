@@ -41,17 +41,13 @@ def test_authenticate_raises_error_on_incorrect_login(
 
 
 def test_authenticate_sets_token_on_correct_login(
-    mocked_responses, pylibrelinkup_client
+    mocked_responses, pylibrelinkup_client, login_response_json
 ):
     """Test that the authenticate method sets the token on a successful login."""
-    response = LoginResponseFactory.build()
-    response.data.authTicket.token = "parp"
-    assert isinstance(response, LoginResponse)
-
     mocked_responses.add(
         responses.POST,
         f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
-        json=json.loads(response.model_dump_json()),
+        json=login_response_json,
         status=200,
     )
 
