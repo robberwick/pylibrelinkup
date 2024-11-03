@@ -11,6 +11,7 @@ from .exceptions import (
     RedirectError,
     TermsOfUseError,
     PrivacyPolicyError,
+    EmailVerificationError,
 )
 from .models.connection import ConnectionResponse
 from .models.data import Patient
@@ -61,6 +62,8 @@ class PyLibreLinkUp:
                 raise TermsOfUseError()
             case "pp":
                 raise PrivacyPolicyError()
+            case "verifyEmail":
+                raise EmailVerificationError()
 
         try:
             login_response = LoginResponse.model_validate(data)

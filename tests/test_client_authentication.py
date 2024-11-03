@@ -11,7 +11,7 @@ from pylibrelinkup import (
     TermsOfUseError,
     RedirectError,
 )
-from pylibrelinkup.exceptions import PrivacyPolicyError
+from pylibrelinkup.exceptions import PrivacyPolicyError, EmailVerificationError
 from pylibrelinkup.models.login import (
     LoginResponse,
 )
@@ -119,6 +119,22 @@ def test_authenticate_raises_privacy_policy_error(
     )
 
     with pytest.raises(PrivacyPolicyError):
+        pylibrelinkup_client.client.authenticate()
+
+
+def test_authenticate_raise_email_verification_error(
+    mocked_responses, pylibrelinkup_client, email_verification_response_json
+):
+    """Test that the authenticate method raises an EmailVerificationError, when the user needs to verify their email."""
+
+    mocked_responses.add(
+        responses.POST,
+        f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
+        json=email_verification_response_json,
+        status=200,
+    )
+
+    with pytest.raises(EmailVerificationError):
         pylibrelinkup_client.client.authenticate()
 
 

@@ -1,0 +1,22 @@
+{
+  "status": 4,
+  "data": {
+    "step": {
+      "type": "verifyEmail",
+      "componentName": "VerifyEmail",
+      "props": {
+        "email": "test@example.com"
+      }
+    },
+    "user": {
+      "accountType": "pat",
+      "country": "GB",
+      "uiLanguage": ""
+    },
+    "authTicket": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhmZmYzNzk4LTk5ZjgtMTFlZi05MzYyLWY2ZGMwZGI2MTkzNyIsImZpcnN0TmFtZSI6IlJvYiIsImxhc3ROYW1lIjoiQmVyd2ljayIsImNvdW50cnkiOiJHQiIsInJlZ2lvbiI6ImV1MiIsInJvbGUiOiJwYXRpZW50IiwiZW1haWwiOiJsbHUtcHAtdG91QGJlcndpY2stb25saW5lLmNvbSIsImMiOjEsInMiOiJsbHUuYW5kcm9pZCIsImV4cCI6MTczMDY1MTQzMn0.D7W6ZJHmW2ZRmKMOaTyKszmZzYoDzEs4CELvDF6yz0I",
+      "expires": 1730651432,
+      "duration": 3600000
+    }
+  }
+}
