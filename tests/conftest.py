@@ -15,6 +15,12 @@ def mocked_responses():
 
 
 @pytest.fixture
+def login_response_json():
+    with open(Path(__file__).parent / "data" / "login_response.json") as f:
+        return json.loads(f.read())
+
+
+@pytest.fixture
 def graph_response_json():
     with open(Path(__file__).parent / "data" / "graph_response.json") as f:
         return json.loads(f.read())
