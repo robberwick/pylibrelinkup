@@ -6,6 +6,7 @@ import requests
 from pydantic import ValidationError
 
 from .api_url import APIUrl
+from .decorators import authenticated
 from .exceptions import (
     AuthenticationError,
     RedirectError,
@@ -15,7 +16,7 @@ from .exceptions import (
 )
 from .models.connection import GraphResponse
 from .models.data import Patient
-from .models.login import LoginArgs, LoginResponse
+from .models.login import LoginArgs
 
 __all__ = ["PyLibreLinkUp"]
 
@@ -87,11 +88,9 @@ class PyLibreLinkUp:
         r.raise_for_status()
         return r.json()
 
+    @authenticated
     def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
         """Requests and returns patient data"""
-        if self.token is None:
-            raise AuthenticationError("PyLibreLinkUp not authenticated")
-
         invalid_patient_identifier = "Invalid patient_identifier"
         patient_id: UUID | None = None
         if isinstance(patient_identifier, UUID):
