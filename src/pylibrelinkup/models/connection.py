@@ -11,7 +11,7 @@ from .config import AlarmRules
 from .data import GlucoseMeasurement
 from .hardware import Sensor, PatientDevice, ActiveSensor
 
-__all__ = ["ConnectionResponse"]
+__all__ = ["GraphResponse"]
 
 
 class Connection(BaseModel):
@@ -72,8 +72,8 @@ class Ticket(BaseModel):
     duration: int
 
 
-class ConnectionResponse(BaseModel):
-    """ConnectionResponse class to store API connection endpoint response."""
+class GraphResponse(BaseModel):
+    """GraphResponse class to store API graph data endpoint response."""
 
     model_config = ConfigDict(
         str_strip_whitespace=True,

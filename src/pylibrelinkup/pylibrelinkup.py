@@ -13,7 +13,7 @@ from .exceptions import (
     PrivacyPolicyError,
     EmailVerificationError,
 )
-from .models.connection import ConnectionResponse
+from .models.connection import GraphResponse
 from .models.data import Patient
 from .models.login import LoginArgs, LoginResponse
 
@@ -87,7 +87,7 @@ class PyLibreLinkUp:
         r.raise_for_status()
         return r.json()
 
-    def read(self, patient_identifier: UUID | str | Patient) -> ConnectionResponse:
+    def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
         """Requests and returns patient data"""
         if self.token is None:
             raise AuthenticationError("PyLibreLinkUp not authenticated")
@@ -108,4 +108,4 @@ class PyLibreLinkUp:
 
         response_json = self._get_graph_data_json(patient_id)
 
-        return ConnectionResponse.model_validate(response_json)
+        return GraphResponse.model_validate(response_json)
