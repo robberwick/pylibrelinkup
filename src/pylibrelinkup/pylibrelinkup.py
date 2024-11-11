@@ -14,7 +14,7 @@ from .exceptions import (
     PrivacyPolicyError,
     EmailVerificationError,
 )
-from .models.connection import GraphResponse
+from .models.connection import GraphResponse, LogbookResponse
 from .models.data import Patient
 from .models.login import LoginArgs
 from .utilities import coerce_patient_id
@@ -89,6 +89,14 @@ class PyLibreLinkUp:
         r.raise_for_status()
         return r.json()
 
+    def _get_logbook_json(self, patient_id: UUID) -> dict:
+        r = requests.get(
+            url=f"{self.api_url}/llu/connections/{patient_id}/logbook",
+            headers=self.HEADERS,
+        )
+        r.raise_for_status()
+        return r.json()
+
     @authenticated
     def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
         """Requests and returns patient data"""
@@ -97,3 +105,12 @@ class PyLibreLinkUp:
         response_json = self._get_graph_data_json(patient_id)
 
         return GraphResponse.model_validate(response_json)
+
+    @authenticated
+    def logbook(self, patient_identifier: UUID | str | Patient) -> LogbookResponse:
+        """Requests and returns patient logbook data"""
+        patient_id = coerce_patient_id(patient_identifier)
+
+        response_json = self._get_logbook_json(patient_id)
+
+        return LogbookResponse.model_validate(response_json)

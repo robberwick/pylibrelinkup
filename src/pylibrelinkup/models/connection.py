@@ -1,3 +1,4 @@
+import json
 from uuid import UUID
 
 from pydantic import (
@@ -11,7 +12,7 @@ from .config import AlarmRules
 from .data import GlucoseMeasurement
 from .hardware import Sensor, PatientDevice, ActiveSensor
 
-__all__ = ["GraphResponse"]
+__all__ = ["GraphResponse", "LogbookResponse"]
 
 
 class Connection(BaseModel):
@@ -100,3 +101,25 @@ class GraphResponse(BaseModel):
     def raw(self):
         """Returns the raw JSON data returned by the API."""
         return self.data.model_dump_json()
+
+
+class LogbookResponse(BaseModel):
+    """LogbookResponse class to store API logbook data endpoint response."""
+
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True,
+    )
+
+    status: int
+    data: list[GlucoseMeasurement]
+    ticket: Ticket
+
+    @property
+    def raw(self):
+        """Returns the raw JSON data returned by the API."""
+        return json.dumps(
+            [json.loads(measurement.model_dump_json()) for measurement in self.data]
+        )
