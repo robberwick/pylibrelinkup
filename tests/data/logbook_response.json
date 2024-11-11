@@ -1,0 +1,49 @@
+{
+  "status": 0,
+  "data": [
+    {
+      "FactoryTimestamp": "11/10/2024 5:13:36 PM",
+      "GlucoseUnits": 0,
+      "MeasurementColor": 2,
+      "Timestamp": "11/10/2024 5:13:36 PM",
+      "TrendArrow": 3,
+      "TrendMessage": null,
+      "Value": 10.9,
+      "ValueInMgPerDl": 197,
+      "isHigh": false,
+      "isLow": false,
+      "type": 1
+    },
+    {
+      "FactoryTimestamp": "11/10/2024 1:08:19 PM",
+      "GlucoseUnits": 0,
+      "MeasurementColor": 2,
+      "Timestamp": "11/10/2024 1:08:19 PM",
+      "TrendArrow": 4,
+      "TrendMessage": null,
+      "Value": 10.1,
+      "ValueInMgPerDl": 181,
+      "isHigh": false,
+      "isLow": false,
+      "type": 1
+    },
+    {
+      "FactoryTimestamp": "11/9/2024 3:19:00 PM",
+      "GlucoseUnits": 0,
+      "MeasurementColor": 1,
+      "Timestamp": "11/9/2024 3:19:00 PM",
+      "TrendArrow": 3,
+      "TrendMessage": null,
+      "Value": 8.8,
+      "ValueInMgPerDl": 159,
+      "isHigh": false,
+      "isLow": false,
+      "type": 1
+    }
+  ],
+  "ticket": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZGFjNDk2LWQyNGUtMTFlYy04ZTVkLTAyNDJhYzExMDAwMiIsImZpcnN0TmFtZSI6IkhhbGltZSBTZWxjdWsiLCJsYXN0TmFtZSI6Iktla2VjIiwiY291bnRyeSI6IkRFIiwicmVnaW9uIjoiZXUiLCJyb2xlIjoicGF0aWVudCIsInVuaXRzIjoxLCJwcmFjdGljZXMiOltdLCJjIjoxLCJzIjoibGx1LmFuZHJvaWQiLCJleHAiOjE2Njg2OTIzNTl9.LK8Ejr2IDKGM7oiObVYMHC8HV2bPcv6obt7UiEFXXXX",
+    "expires": 1668692359,
+    "duration": 15552000000
+  }
+}
