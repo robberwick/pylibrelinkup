@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import warnings
+from typing import List
 from uuid import UUID
 
 import requests
@@ -15,7 +17,7 @@ from .exceptions import (
     EmailVerificationError,
 )
 from .models.connection import GraphResponse, LogbookResponse
-from .models.data import Patient
+from .models.data import Patient, GlucoseMeasurement
 from .models.login import LoginArgs
 from .utilities import coerce_patient_id
 
@@ -100,11 +102,37 @@ class PyLibreLinkUp:
     @authenticated
     def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
         """Requests and returns patient data"""
+        # raise a deprecation warning for this method in favor of the graph method
+        warnings.warn(
+            "The read method is deprecated. Instead, please use the graph method for retrieving graph data,"
+            "and latest to access the most recently reported glucose measurement.",
+            DeprecationWarning,
+        )
         patient_id = coerce_patient_id(patient_identifier)
 
         response_json = self._get_graph_data_json(patient_id)
 
         return GraphResponse.model_validate(response_json)
+
+    @authenticated
+    def graph(
+        self, patient_identifier: UUID | str | Patient
+    ) -> list[GlucoseMeasurement]:
+        """Requests and returns patient graph data"""
+        patient_id = coerce_patient_id(patient_identifier)
+
+        response_json = self._get_graph_data_json(patient_id)
+
+        return GraphResponse.model_validate(response_json).history
+
+    @authenticated
+    def latest(self, patient_identifier: UUID | str | Patient) -> GlucoseMeasurement:
+        """Requests and returns the most recent glucose measurement"""
+        patient_id = coerce_patient_id(patient_identifier)
+
+        response_json = self._get_graph_data_json(patient_id)
+
+        return GraphResponse.model_validate(response_json).current
 
     @authenticated
     def logbook(self, patient_identifier: UUID | str | Patient) -> LogbookResponse:
