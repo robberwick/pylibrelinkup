@@ -8,6 +8,24 @@ from tests.conftest import graph_response_json
 from tests.factories import PatientFactory
 
 
+def test_read_generate_deprecation_warning(
+    mocked_responses, graph_response_json, pylibrelinkup_client
+):
+    """Test that the read method generates a deprecation warning."""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+
+    mocked_responses.add(
+        responses.GET,
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        json=graph_response_json,
+        status=200,
+    )
+
+    pylibrelinkup_client.client.token = "not_a_token"
+    with pytest.warns(DeprecationWarning):
+        pylibrelinkup_client.client.read(UUID("12345678-1234-5678-1234-567812345678"))
+
+
 def test_read_raises_authentication_error_for_unauthenticated_client(
     pylibrelinkup_client,
 ):
