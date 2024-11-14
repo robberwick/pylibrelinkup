@@ -48,6 +48,7 @@ class PyLibreLinkUp:
         self.api_url: str = api_url.value
 
     def authenticate(self) -> None:
+        """Authenticate with the LibreLinkUp API"""
         r = requests.post(
             url=f"{self.api_url}/llu/auth/login",
             headers=self.HEADERS,
@@ -76,28 +77,26 @@ class PyLibreLinkUp:
         except KeyError:
             raise AuthenticationError("Invalid login credentials")
 
-    def get_patients(self) -> list[Patient]:
-        """Requests and returns patient data"""
-        r = requests.get(url=f"{self.api_url}/llu/connections", headers=self.HEADERS)
+    def _call_api(self, url: str = None) -> dict:
+        r = requests.get(url=url, headers=self.HEADERS)
         r.raise_for_status()
         data = r.json()
+        return data
+
+    def get_patients(self) -> list[Patient]:
+        """Requests and returns patient data"""
+        data = self._call_api(url=f"{self.api_url}/llu/connections")
         return [Patient.model_validate(patient) for patient in data["data"]]
 
     def _get_graph_data_json(self, patient_id: UUID) -> dict:
-        r = requests.get(
-            url=f"{self.api_url}/llu/connections/{patient_id}/graph",
-            headers=self.HEADERS,
-        )
-        r.raise_for_status()
-        return r.json()
+        """Requests and returns patient graph data"""
+        return self._call_api(url=f"{self.api_url}/llu/connections/{patient_id}/graph")
 
     def _get_logbook_json(self, patient_id: UUID) -> dict:
-        r = requests.get(
-            url=f"{self.api_url}/llu/connections/{patient_id}/logbook",
-            headers=self.HEADERS,
+        """Requests and returns patient logbook data"""
+        return self._call_api(
+            url=f"{self.api_url}/llu/connections/{patient_id}/logbook"
         )
-        r.raise_for_status()
-        return r.json()
 
     @authenticated
     def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
