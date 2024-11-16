@@ -48,3 +48,6 @@ Issues = "https://github.com/robberwick/pylibrelinkup/issues"
 where = ["src"]
 
 [tool.setuptools_scm]
+
+[tool.black]
+target_version = ['py311']
