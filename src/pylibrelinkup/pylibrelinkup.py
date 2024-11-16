@@ -135,7 +135,7 @@ class PyLibreLinkUp:
 
     @authenticated
     def logbook(self, patient_identifier: UUID | str | Patient) -> LogbookResponse:
-        """Requests and returns patient logbook data"""
+        """Requests and returns patient logbook data, containing the measurements associated with glucose events for approximately the last 14 days."""
         patient_id = coerce_patient_id(patient_identifier)
 
         response_json = self._get_logbook_json(patient_id)
