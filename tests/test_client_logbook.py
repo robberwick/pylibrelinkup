@@ -5,7 +5,6 @@ import responses
 
 from pylibrelinkup import AuthenticationError
 from pylibrelinkup.models.data import GlucoseMeasurement
-from tests.conftest import logbook_response_json
 from tests.factories import PatientFactory
 
 
@@ -110,3 +109,8 @@ def test_logbook_raises_value_error_for_invalid_patient_id_type(pylibrelinkup_cl
 
     with pytest.raises(ValueError, match="Invalid patient_identifier"):
         pylibrelinkup_client.client.logbook(123456)  # type: ignore
+
+
+@pytest.fixture
+def logbook_response_json(get_response_json):
+    return get_response_json("logbook_response.json")
