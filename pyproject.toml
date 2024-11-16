@@ -37,7 +37,7 @@ dependencies = [
 requires-python = ">=3.11"
 
 [project.optional-dependencies]
-dev = ["black"]
+dev = ["black", "isort"]
 test = ["pytest", "pytest-cov", "pytest-mock", "polyfactory", "responses"]
 
 [project.urls]
@@ -51,3 +51,6 @@ where = ["src"]
 
 [tool.black]
 target_version = ['py311']
+
+[tool.isort]
+profile = "black"

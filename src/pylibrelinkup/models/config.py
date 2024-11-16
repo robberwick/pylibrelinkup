@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
-from pylibrelinkup.models.data import H, F, Nd, Std, L
+from pylibrelinkup.models.data import F, H, L, Nd, Std
 
 __all__ = ["AlarmRules", "FixedLowAlarmValues"]
 

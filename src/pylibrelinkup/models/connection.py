@@ -1,16 +1,12 @@
 import json
 from uuid import UUID
 
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-)
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 from .config import AlarmRules
 from .data import GlucoseMeasurement
-from .hardware import Sensor, PatientDevice, ActiveSensor
+from .hardware import ActiveSensor, PatientDevice, Sensor
 
 __all__ = ["GraphResponse", "LogbookResponse"]
 

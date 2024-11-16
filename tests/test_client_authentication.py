@@ -3,14 +3,14 @@ import requests
 import responses
 
 from pylibrelinkup import (
-    PyLibreLinkUp,
     APIUrl,
     AuthenticationError,
-    TermsOfUseError,
+    PyLibreLinkUp,
     RedirectError,
+    TermsOfUseError,
 )
-from pylibrelinkup.exceptions import PrivacyPolicyError, EmailVerificationError
-from tests.conftest import mocked_responses, pylibrelinkup_client, get_response_json
+from pylibrelinkup.exceptions import EmailVerificationError, PrivacyPolicyError
+from tests.conftest import get_response_json, mocked_responses, pylibrelinkup_client
 
 
 def test_client_uses_correct_api_url_default():

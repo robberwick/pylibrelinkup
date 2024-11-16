@@ -11,13 +11,13 @@ from .api_url import APIUrl
 from .decorators import authenticated
 from .exceptions import (
     AuthenticationError,
+    EmailVerificationError,
+    PrivacyPolicyError,
     RedirectError,
     TermsOfUseError,
-    PrivacyPolicyError,
-    EmailVerificationError,
 )
 from .models.connection import GraphResponse, LogbookResponse
-from .models.data import Patient, GlucoseMeasurement
+from .models.data import GlucoseMeasurement, Patient
 from .models.login import LoginArgs
 from .utilities import coerce_patient_id
 
