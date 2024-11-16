@@ -1,5 +1,3 @@
-import json
-
 import pytest
 import requests
 import responses
@@ -12,11 +10,7 @@ from pylibrelinkup import (
     RedirectError,
 )
 from pylibrelinkup.exceptions import PrivacyPolicyError, EmailVerificationError
-from pylibrelinkup.models.login import (
-    LoginResponse,
-)
-from tests.conftest import mocked_responses, pylibrelinkup_client
-from tests.factories import LoginResponseFactory
+from tests.conftest import mocked_responses, pylibrelinkup_client, get_response_json
 
 
 def test_client_uses_correct_api_url_default():
@@ -41,13 +35,13 @@ def test_authenticate_raises_error_on_incorrect_login(
 
 
 def test_authenticate_sets_token_on_correct_login(
-    mocked_responses, pylibrelinkup_client, login_response_json
+    mocked_responses, pylibrelinkup_client, get_response_json
 ):
     """Test that the authenticate method sets the token on a successful login."""
     mocked_responses.add(
         responses.POST,
         f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
-        json=login_response_json,
+        json=get_response_json("login_response.json"),
         status=200,
     )
 
@@ -87,14 +81,14 @@ def test_authenticate_raises_error_on_http_error(
 
 
 def test_authenticate_raises_terms_of_use_error(
-    mocked_responses, pylibrelinkup_client, terms_of_use_response_json
+    mocked_responses, pylibrelinkup_client, get_response_json
 ):
     """Test that the authenticate method raises a TermsOfUseError, when the user needs to accept terms of use."""
 
     mocked_responses.add(
         responses.POST,
         f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
-        json=terms_of_use_response_json,
+        json=get_response_json("terms_of_use_response.json"),
         status=200,
     )
 
@@ -103,14 +97,14 @@ def test_authenticate_raises_terms_of_use_error(
 
 
 def test_authenticate_raises_privacy_policy_error(
-    mocked_responses, pylibrelinkup_client, privacy_policy_response_json
+    mocked_responses, pylibrelinkup_client, get_response_json
 ):
     """Test that the authenticate method raises a PrivacyPolicyError, when the user needs to accept the privacy policy."""
 
     mocked_responses.add(
         responses.POST,
         f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
-        json=privacy_policy_response_json,
+        json=get_response_json("privacy_policy_response.json"),
         status=200,
     )
 
@@ -119,14 +113,14 @@ def test_authenticate_raises_privacy_policy_error(
 
 
 def test_authenticate_raise_email_verification_error(
-    mocked_responses, pylibrelinkup_client, email_verification_response_json
+    mocked_responses, pylibrelinkup_client, get_response_json
 ):
     """Test that the authenticate method raises an EmailVerificationError, when the user needs to verify their email."""
 
     mocked_responses.add(
         responses.POST,
         f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
-        json=email_verification_response_json,
+        json=get_response_json("email_verification_response.json"),
         status=200,
     )
 
@@ -135,14 +129,14 @@ def test_authenticate_raise_email_verification_error(
 
 
 def test_redirection_response_raises_redirect_error(
-    mocked_responses, pylibrelinkup_client, redirect_response_json
+    mocked_responses, pylibrelinkup_client, get_response_json
 ):
     """Test that the authenticate method raises a RedirectError, when the user is redirected to a different region."""
 
     mocked_responses.add(
         responses.POST,
         f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
-        json=redirect_response_json,
+        json=get_response_json("redirect_response.json"),
         status=200,
     )
 
