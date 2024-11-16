@@ -117,7 +117,7 @@ class PyLibreLinkUp:
     def graph(
         self, patient_identifier: UUID | str | Patient
     ) -> list[GlucoseMeasurement]:
-        """Requests and returns patient graph data"""
+        """Requests and returns glucose measurements used to display graph data. Returns approximately the last 12 hours of data."""
         patient_id = coerce_patient_id(patient_identifier)
 
         response_json = self._get_graph_data_json(patient_id)
