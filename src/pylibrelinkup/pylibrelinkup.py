@@ -134,10 +134,12 @@ class PyLibreLinkUp:
         return GraphResponse.model_validate(response_json).current
 
     @authenticated
-    def logbook(self, patient_identifier: UUID | str | Patient) -> LogbookResponse:
+    def logbook(
+        self, patient_identifier: UUID | str | Patient
+    ) -> list[GlucoseMeasurement]:
         """Requests and returns patient logbook data, containing the measurements associated with glucose events for approximately the last 14 days."""
         patient_id = coerce_patient_id(patient_identifier)
 
         response_json = self._get_logbook_json(patient_id)
 
-        return LogbookResponse.model_validate(response_json)
+        return LogbookResponse.model_validate(response_json).data

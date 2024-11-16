@@ -3,7 +3,8 @@ from uuid import UUID
 import pytest
 import responses
 
-from pylibrelinkup import AuthenticationError, LogbookResponse
+from pylibrelinkup import AuthenticationError
+from pylibrelinkup.models.data import GlucoseMeasurement
 from tests.conftest import logbook_response_json
 from tests.factories import PatientFactory
 
@@ -35,9 +36,10 @@ def test_logbook_returns_logbook_response_for_valid_uuid(
 
     result = pylibrelinkup_client.client.logbook(patient_id)
 
-    assert isinstance(result, LogbookResponse)
+    assert isinstance(result, list)
+    assert all([isinstance(measurement, GlucoseMeasurement) for measurement in result])
     assert (
-        result.data[0].value_in_mg_per_dl
+        result[0].value_in_mg_per_dl
         == logbook_response_json["data"][0]["ValueInMgPerDl"]
     )
 
@@ -59,9 +61,10 @@ def test_logbook_returns_logbook_response_for_valid_patient(
 
     result = pylibrelinkup_client.client.logbook(patient)
 
-    assert isinstance(result, LogbookResponse)
+    assert isinstance(result, list)
+    assert all([isinstance(measurement, GlucoseMeasurement) for measurement in result])
     assert (
-        result.data[0].value_in_mg_per_dl
+        result[0].value_in_mg_per_dl
         == logbook_response_json["data"][0]["ValueInMgPerDl"]
     )
 
@@ -83,9 +86,10 @@ def test_logbook_returns_logbook_response_for_valid_string(
 
     result = pylibrelinkup_client.client.logbook(patient_id)
 
-    assert isinstance(result, LogbookResponse)
+    assert isinstance(result, list)
+    assert all([isinstance(measurement, GlucoseMeasurement) for measurement in result])
     assert (
-        result.data[0].value_in_mg_per_dl
+        result[0].value_in_mg_per_dl
         == logbook_response_json["data"][0]["ValueInMgPerDl"]
     )
 
