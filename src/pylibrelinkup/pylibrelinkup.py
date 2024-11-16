@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import warnings
+from typing import List
 from uuid import UUID
 
 import requests
 from pydantic import ValidationError
 
 from .api_url import APIUrl
+from .decorators import authenticated
 from .exceptions import (
     AuthenticationError,
     RedirectError,
@@ -13,9 +16,10 @@ from .exceptions import (
     PrivacyPolicyError,
     EmailVerificationError,
 )
-from .models.connection import ConnectionResponse
-from .models.data import Patient
-from .models.login import LoginArgs, LoginResponse
+from .models.connection import GraphResponse, LogbookResponse
+from .models.data import Patient, GlucoseMeasurement
+from .models.login import LoginArgs
+from .utilities import coerce_patient_id
 
 __all__ = ["PyLibreLinkUp"]
 
@@ -44,6 +48,7 @@ class PyLibreLinkUp:
         self.api_url: str = api_url.value
 
     def authenticate(self) -> None:
+        """Authenticate with the LibreLinkUp API"""
         r = requests.post(
             url=f"{self.api_url}/llu/auth/login",
             headers=self.HEADERS,
@@ -72,40 +77,69 @@ class PyLibreLinkUp:
         except KeyError:
             raise AuthenticationError("Invalid login credentials")
 
-    def get_patients(self) -> list[Patient]:
-        """Requests and returns patient data"""
-        r = requests.get(url=f"{self.api_url}/llu/connections", headers=self.HEADERS)
+    def _call_api(self, url: str = None) -> dict:
+        r = requests.get(url=url, headers=self.HEADERS)
         r.raise_for_status()
         data = r.json()
+        return data
+
+    def get_patients(self) -> list[Patient]:
+        """Requests and returns patient data"""
+        data = self._call_api(url=f"{self.api_url}/llu/connections")
         return [Patient.model_validate(patient) for patient in data["data"]]
 
     def _get_graph_data_json(self, patient_id: UUID) -> dict:
-        r = requests.get(
-            url=f"{self.api_url}/llu/connections/{patient_id}/graph",
-            headers=self.HEADERS,
+        """Requests and returns patient graph data"""
+        return self._call_api(url=f"{self.api_url}/llu/connections/{patient_id}/graph")
+
+    def _get_logbook_json(self, patient_id: UUID) -> dict:
+        """Requests and returns patient logbook data"""
+        return self._call_api(
+            url=f"{self.api_url}/llu/connections/{patient_id}/logbook"
         )
-        r.raise_for_status()
-        return r.json()
 
-    def read(self, patient_identifier: UUID | str | Patient) -> ConnectionResponse:
+    @authenticated
+    def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
         """Requests and returns patient data"""
-        if self.token is None:
-            raise AuthenticationError("PyLibreLinkUp not authenticated")
-
-        invalid_patient_identifier = "Invalid patient_identifier"
-        patient_id: UUID | None = None
-        if isinstance(patient_identifier, UUID):
-            patient_id = patient_identifier
-        elif isinstance(patient_identifier, str):
-            try:
-                patient_id = UUID(patient_identifier)
-            except ValueError as exc:
-                raise ValueError(invalid_patient_identifier) from exc
-        elif isinstance(patient_identifier, Patient):
-            patient_id = patient_identifier.patient_id
-        else:
-            raise ValueError(invalid_patient_identifier)
+        # raise a deprecation warning for this method in favor of the graph method
+        warnings.warn(
+            "The read method is deprecated. Instead, please use the graph method for retrieving graph data,"
+            "and latest to access the most recently reported glucose measurement.",
+            DeprecationWarning,
+        )
+        patient_id = coerce_patient_id(patient_identifier)
 
         response_json = self._get_graph_data_json(patient_id)
 
-        return ConnectionResponse.model_validate(response_json)
+        return GraphResponse.model_validate(response_json)
+
+    @authenticated
+    def graph(
+        self, patient_identifier: UUID | str | Patient
+    ) -> list[GlucoseMeasurement]:
+        """Requests and returns glucose measurements used to display graph data. Returns approximately the last 12 hours of data."""
+        patient_id = coerce_patient_id(patient_identifier)
+
+        response_json = self._get_graph_data_json(patient_id)
+
+        return GraphResponse.model_validate(response_json).history
+
+    @authenticated
+    def latest(self, patient_identifier: UUID | str | Patient) -> GlucoseMeasurement:
+        """Requests and returns the most recent glucose measurement"""
+        patient_id = coerce_patient_id(patient_identifier)
+
+        response_json = self._get_graph_data_json(patient_id)
+
+        return GraphResponse.model_validate(response_json).current
+
+    @authenticated
+    def logbook(
+        self, patient_identifier: UUID | str | Patient
+    ) -> list[GlucoseMeasurement]:
+        """Requests and returns patient logbook data, containing the measurements associated with glucose events for approximately the last 14 days."""
+        patient_id = coerce_patient_id(patient_identifier)
+
+        response_json = self._get_logbook_json(patient_id)
+
+        return LogbookResponse.model_validate(response_json).data
