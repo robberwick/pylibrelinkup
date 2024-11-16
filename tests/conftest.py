@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 import responses
 
-from pylibrelinkup import PyLibreLinkUp, APIUrl
+from pylibrelinkup import APIUrl, PyLibreLinkUp
 
 
 @pytest.fixture

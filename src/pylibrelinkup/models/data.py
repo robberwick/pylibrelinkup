@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from enum import IntEnum
 from uuid import UUID
 
