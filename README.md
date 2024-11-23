@@ -86,3 +86,5 @@ print(f"logbook data: ({len(logbook_data)} entries)")
 for measurement in logbook_data:
     print(f"{measurement.value} {measurement.timestamp} {measurement.factory_timestamp}")
 ```
+
+For full documentation, please refer to the [API documentation](https://pylibrelinkup.readthedocs.io/en/latest/).
