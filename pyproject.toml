@@ -44,6 +44,7 @@ test = ["pytest", "pytest-cov", "pytest-mock", "polyfactory", "responses"]
 [project.urls]
 Homepage = "https://github.com/robberwick/pylibrelinkup"
 Issues = "https://github.com/robberwick/pylibrelinkup/issues"
+Documentation = "https://pylibrelinkup.readthedocs.io/"
 
 [tool.setuptools.packages.find]
 where = ["src"]
