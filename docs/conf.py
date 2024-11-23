@@ -2,6 +2,7 @@
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+from setuptools_scm import get_version
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -10,7 +11,7 @@ project = "pylibrelinkup"
 copyright = "2024, Rob Berwick"
 author = "Rob Berwick"
 
-release = "0.6.0"
+release = get_version(root="..", relative_to=__file__)
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
