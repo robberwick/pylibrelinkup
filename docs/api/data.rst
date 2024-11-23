@@ -1,10 +1,11 @@
-pylibrelinkup.models package
-============================
+Data Models
+==================
 
-Submodules
-----------
+.. toctree::
+   :maxdepth: 2
 
-pylibrelinkup.models.config module
+
+Config
 ----------------------------------
 
 .. automodule:: pylibrelinkup.models.config
@@ -12,7 +13,7 @@ pylibrelinkup.models.config module
    :undoc-members:
    :show-inheritance:
 
-pylibrelinkup.models.connection module
+Connections
 --------------------------------------
 
 .. automodule:: pylibrelinkup.models.connection
@@ -20,7 +21,7 @@ pylibrelinkup.models.connection module
    :undoc-members:
    :show-inheritance:
 
-pylibrelinkup.models.data module
+Data
 --------------------------------
 
 .. automodule:: pylibrelinkup.models.data
@@ -28,7 +29,7 @@ pylibrelinkup.models.data module
    :undoc-members:
    :show-inheritance:
 
-pylibrelinkup.models.hardware module
+Hardware
 ------------------------------------
 
 .. automodule:: pylibrelinkup.models.hardware
@@ -36,18 +37,10 @@ pylibrelinkup.models.hardware module
    :undoc-members:
    :show-inheritance:
 
-pylibrelinkup.models.login module
+Login
 ---------------------------------
 
 .. automodule:: pylibrelinkup.models.login
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pylibrelinkup.models
    :members:
    :undoc-members:
    :show-inheritance:

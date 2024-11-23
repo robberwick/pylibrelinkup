@@ -1,19 +1,18 @@
-pylibrelinkup documentation
-===========================
+PyLibreLinkUp
+=============
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+PyLibreLinkUp is a Python client for the LibreLinkUp API, which allows you to interact with the LibreLinkUp service to retrieve glucose data and other related information. This project is a Python implementation inspired by the libre-link-up-api-client_ project.
 
+.. _libre-link-up-api-client: https://github.com/DiaKEM/libre-link-up-api-client
+
+
+Contents
+--------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 4
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   install
+   usage
+   api/index
+   development
