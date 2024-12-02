@@ -61,11 +61,11 @@ class GlucoseMeasurement(BaseModel):
 
     factory_timestamp: datetime = Field(None)
     timestamp: datetime = Field(None)
-    type: int
-    value_in_mg_per_dl: float
-    measurement_color: int
-    glucose_units: int
-    value: float
+    type: int = Field(default=0)
+    value_in_mg_per_dl: float = Field(default=0.0)
+    measurement_color: int = Field(default=0)
+    glucose_units: int = Field(default=0)
+    value: float = Field(default=0.0)
     is_high: bool = Field(alias="isHigh")
     is_low: bool = Field(alias="isLow")
 
@@ -104,11 +104,11 @@ class F(BaseModel):
         from_attributes=True,
     )
 
-    th: int
-    thmm: float
-    d: int
-    tl: int
-    tlmm: float
+    th: int = Field(default=0)
+    thmm: float = Field(default=0.0)
+    d: int = Field(default=0)
+    tl: int = Field(default=0)
+    tlmm: float = Field(default=0.0)
 
 
 class L(BaseModel):
@@ -118,11 +118,12 @@ class L(BaseModel):
         from_attributes=True,
     )
 
-    th: int
-    thmm: float
-    d: int
-    tl: int
-    tlmm: float
+
+th: int = Field(default=0)
+thmm: float = Field(default=0.0)
+d: int = Field(default=0)
+tl: int = Field(default=0)
+tlmm: float = Field(default=0.0)
 
 
 class H(BaseModel):
@@ -132,10 +133,11 @@ class H(BaseModel):
         from_attributes=True,
     )
 
-    th: int
-    thmm: float
-    d: int
-    f: float
+
+th: int = Field(default=0)
+thmm: float = Field(default=0.0)
+d: int = Field(default=0)
+f: float = Field(default=0.0)
 
 
 class Nd(BaseModel):
@@ -145,9 +147,10 @@ class Nd(BaseModel):
         from_attributes=True,
     )
 
-    i: int
-    r: int
-    l: int
+
+i: int = Field(default=0)
+r: int = Field(default=0)
+l: int = Field(default=0)
 
 
 class Std(BaseModel):
@@ -157,4 +160,4 @@ class Std(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
     )
-    sd: bool | None = None
+    sd: bool | None = Field(default=None)

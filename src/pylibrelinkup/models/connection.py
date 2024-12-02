@@ -23,20 +23,20 @@ class Connection(BaseModel):
 
     id: UUID
     patient_id: UUID
-    country: str
-    status: int
-    first_name: str
-    last_name: str
-    target_low: int
-    target_high: int
-    uom: int
+    country: str = Field(default="")
+    status: int = Field(default=0)
+    first_name: str = Field(default="")
+    last_name: str = Field(default="")
+    target_low: int = Field(default=0)
+    target_high: int = Field(default=0)
+    uom: int = Field(default=0)
     sensor: Sensor
     alarm_rules: AlarmRules
     glucose_measurement: GlucoseMeasurement
     glucose_item: GlucoseMeasurement
     glucose_alarm: None
     patient_device: PatientDevice
-    created: int
+    created: int = Field(default=0)
 
 
 class Data(BaseModel):
@@ -64,9 +64,9 @@ class Ticket(BaseModel):
         from_attributes=True,
     )
 
-    token: str
-    expires: int
-    duration: int
+    token: str = Field(default="")
+    expires: int = Field(default=0)
+    duration: int = Field(default=0)
 
 
 class GraphResponse(BaseModel):
@@ -79,7 +79,7 @@ class GraphResponse(BaseModel):
         from_attributes=True,
     )
 
-    status: int
+    status: int = Field(default=0)
     data: Data
     ticket: Ticket
 
