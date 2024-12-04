@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 from .config import FixedLowAlarmValues
@@ -16,11 +16,12 @@ class Sensor(BaseModel):
         from_attributes=True,
     )
 
-    device_id: str
-    sn: str
-    a: int
-    w: int
-    pt: int
+
+device_id: str = Field(default="")
+sn: str = Field(default="")
+a: int = Field(default=0)
+w: int = Field(default=0)
+pt: int = Field(default=0)
 
 
 class PatientDevice(BaseModel):
@@ -33,14 +34,15 @@ class PatientDevice(BaseModel):
         from_attributes=True,
     )
 
-    did: str
-    dtid: int
-    v: str
-    ll: int
-    hl: int
-    u: int
-    fixed_low_alarm_values: FixedLowAlarmValues
-    alarms: bool
+
+did: str = Field(default="")
+dtid: int = Field(default=0)
+v: str = Field(default="")
+ll: int = Field(default=0)
+hl: int = Field(default=0)
+u: int = Field(default=0)
+fixed_low_alarm_values: FixedLowAlarmValues
+alarms: bool = Field(default=False)
 
 
 class ActiveSensor(BaseModel):
@@ -53,5 +55,6 @@ class ActiveSensor(BaseModel):
         from_attributes=True,
     )
 
-    sensor: Sensor
-    device: PatientDevice
+
+sensor: Sensor
+device: PatientDevice

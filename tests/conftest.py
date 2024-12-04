@@ -38,6 +38,11 @@ def graph_response_no_alarm_rules_c_json(get_response_json):
     return get_response_json("graph_response_no_alarm_rules_c.json")
 
 
+@pytest.fixture
+def graph_response_no_u_json(get_response_json):
+    return get_response_json("graph_response_no_u.json")
+
+
 @dataclass
 class PyLibreLinkUpClientFixture:
     client: PyLibreLinkUp

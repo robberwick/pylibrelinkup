@@ -3,7 +3,7 @@ from uuid import UUID
 import pytest
 import responses
 
-from pylibrelinkup import AuthenticationError, GraphResponse
+from pylibrelinkup import AuthenticationError
 from pylibrelinkup.models.data import GlucoseMeasurement
 from tests.conftest import graph_response_json
 from tests.factories import PatientFactory
@@ -162,4 +162,29 @@ def test_graph_response_no_alarm_rules_c_returns_graph_response(
         == graph_response_no_alarm_rules_c_json["data"]["graphData"][0][
             "ValueInMgPerDl"
         ]
+    )
+
+
+def test_graph_response_no_u_returns_graph_response(
+    mocked_responses, graph_response_no_u_json, pylibrelinkup_client
+):
+    """Test that the read method returns GraphResponse when no alarm_rules.c key is present in llu api response data."""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+
+    mocked_responses.add(
+        responses.GET,
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        json=graph_response_no_u_json,
+        status=200,
+    )
+
+    pylibrelinkup_client.client.token = "not_a_token"
+
+    result = pylibrelinkup_client.client.graph(patient_id)
+
+    assert isinstance(result, list)
+    assert all([isinstance(measurement, GlucoseMeasurement) for measurement in result])
+    assert (
+        result[0].value_in_mg_per_dl
+        == graph_response_no_u_json["data"]["graphData"][0]["ValueInMgPerDl"]
     )

@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 __all__ = [
     "Llu",
@@ -22,8 +22,8 @@ __all__ = [
 
 
 class Llu(BaseModel):
-    policyAccept: int
-    touAccept: int
+    policyAccept: int = Field(default=0)
+    touAccept: int = Field(default=0)
 
 
 class Consents(BaseModel):
@@ -31,12 +31,12 @@ class Consents(BaseModel):
 
 
 class SystemMessages(BaseModel):
-    firstUsePhoenix: int
-    firstUsePhoenixReportsDataMerged: int
-    lluGettingStartedBanner: int
-    lluNewFeatureModal: int
-    lluOnboarding: int
-    lvWebPostRelease: str
+    firstUsePhoenix: int = Field(default=0)
+    firstUsePhoenixReportsDataMerged: int = Field(default=0)
+    lluGettingStartedBanner: int = Field(default=0)
+    lluNewFeatureModal: int = Field(default=0)
+    lluOnboarding: int = Field(default=0)
+    lvWebPostRelease: str = Field(default="")
 
 
 class System(BaseModel):
@@ -44,17 +44,17 @@ class System(BaseModel):
 
 
 class User(BaseModel):
-    id: str
-    firstName: str
-    lastName: str
-    email: str
-    country: str
-    uiLanguage: str
-    communicationLanguage: str
-    accountType: str
-    uom: str
-    dateFormat: str
-    timeFormat: str
+    id: str = Field(default="")
+    firstName: str = Field(default="")
+    lastName: str = Field(default="")
+    email: str = Field(default="")
+    country: str = Field(default="")
+    uiLanguage: str = Field(default="")
+    communicationLanguage: str = Field(default="")
+    accountType: str = Field(default="")
+    uom: str = Field(default="")
+    dateFormat: str = Field(default="")
+    timeFormat: str = Field(default="")
     emailDay: List[int]
     system: System
     details: dict
@@ -68,17 +68,17 @@ class User(BaseModel):
 
 
 class Notifications(BaseModel):
-    unresolved: int
+    unresolved: int = Field(default=0)
 
 
 class DataMessages(BaseModel):
-    unread: int
+    unread: int = Field(default=0)
 
 
 class AuthTicket(BaseModel):
-    token: str
-    expires: int
-    duration: int
+    token: str = Field(default="")
+    expires: int = Field(default=0)
+    duration: int = Field(default=0)
 
 
 class Data(BaseModel):
@@ -90,29 +90,29 @@ class Data(BaseModel):
 
 
 class LoginResponse(BaseModel):
-    status: int
+    status: int = Field(default=0)
     data: Data
 
 
 class ErrorMessage(BaseModel):
-    message: str
+    message: str = Field(default="")
 
 
 class LoginResponseUnauthenticated(BaseModel):
-    status: int
+    status: int = Field(default=0)
     error: ErrorMessage
 
 
 class LoginRedirectData(BaseModel):
-    redirect: bool
-    region: str
+    redirect: bool = Field(default=False)
+    region: str = Field(default="")
 
 
 class LoginRedirectResponse(BaseModel):
-    status: int
+    status: int = Field(default=0)
     data: LoginRedirectData
 
 
 class LoginArgs(BaseModel):
-    email: str = ""
-    password: str = ""
+    email: str = Field(default="")
+    password: str = Field(default="")

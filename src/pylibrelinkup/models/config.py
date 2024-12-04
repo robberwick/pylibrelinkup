@@ -21,8 +21,8 @@ class AlarmRules(BaseModel):
     f: F
     l: L
     nd: Nd
-    p: int
-    r: int
+    p: int = Field(default=0)
+    r: int = Field(default=0)
     std: Std
 
 
@@ -34,5 +34,5 @@ class FixedLowAlarmValues(BaseModel):
         from_attributes=True,
     )
 
-    mgdl: int
-    mmoll: float
+    mgdl: int = Field(default=0)
+    mmoll: float = Field(default=0.0)
