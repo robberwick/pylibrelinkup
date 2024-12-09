@@ -118,12 +118,11 @@ class L(BaseModel):
         from_attributes=True,
     )
 
-
-th: int = Field(default=0)
-thmm: float = Field(default=0.0)
-d: int = Field(default=0)
-tl: int = Field(default=0)
-tlmm: float = Field(default=0.0)
+    th: int = Field(default=0)
+    thmm: float = Field(default=0.0)
+    d: int = Field(default=0)
+    tl: int = Field(default=0)
+    tlmm: float = Field(default=0.0)
 
 
 class H(BaseModel):
@@ -133,11 +132,10 @@ class H(BaseModel):
         from_attributes=True,
     )
 
-
-th: int = Field(default=0)
-thmm: float = Field(default=0.0)
-d: int = Field(default=0)
-f: float = Field(default=0.0)
+    th: int = Field(default=0)
+    thmm: float = Field(default=0.0)
+    d: int = Field(default=0)
+    f: float = Field(default=0.0)
 
 
 class Nd(BaseModel):
@@ -147,10 +145,9 @@ class Nd(BaseModel):
         from_attributes=True,
     )
 
-
-i: int = Field(default=0)
-r: int = Field(default=0)
-l: int = Field(default=0)
+    i: int = Field(default=0)
+    r: int = Field(default=0)
+    l: int = Field(default=0)
 
 
 class Std(BaseModel):

@@ -16,12 +16,11 @@ class Sensor(BaseModel):
         from_attributes=True,
     )
 
-
-device_id: str = Field(default="")
-sn: str = Field(default="")
-a: int = Field(default=0)
-w: int = Field(default=0)
-pt: int = Field(default=0)
+    device_id: str = Field(default="")
+    sn: str = Field(default="")
+    a: int = Field(default=0)
+    w: int = Field(default=0)
+    pt: int = Field(default=0)
 
 
 class PatientDevice(BaseModel):
@@ -34,15 +33,14 @@ class PatientDevice(BaseModel):
         from_attributes=True,
     )
 
-
-did: str = Field(default="")
-dtid: int = Field(default=0)
-v: str = Field(default="")
-ll: int = Field(default=0)
-hl: int = Field(default=0)
-u: int = Field(default=0)
-fixed_low_alarm_values: FixedLowAlarmValues
-alarms: bool = Field(default=False)
+    did: str = Field(default="")
+    dtid: int = Field(default=0)
+    v: str = Field(default="")
+    ll: int = Field(default=0)
+    hl: int = Field(default=0)
+    u: int = Field(default=0)
+    fixed_low_alarm_values: FixedLowAlarmValues
+    alarms: bool = Field(default=False)
 
 
 class ActiveSensor(BaseModel):
@@ -55,6 +53,5 @@ class ActiveSensor(BaseModel):
         from_attributes=True,
     )
 
-
-sensor: Sensor
-device: PatientDevice
+    sensor: Sensor
+    device: PatientDevice
