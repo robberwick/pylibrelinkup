@@ -6,10 +6,12 @@ In order to authenticate, you will need to sign up for an account at https://www
 
 from __future__ import annotations
 
+import hashlib
 import warnings
 from uuid import UUID
 
 import requests
+from pydantic import ValidationError
 
 from .api_url import APIUrl
 from .decorators import authenticated
@@ -22,10 +24,20 @@ from .exceptions import (
 )
 from .models.connection import GraphResponse, LogbookResponse
 from .models.data import GlucoseMeasurement, Patient
-from .models.login import LoginArgs
+from .models.login import LoginArgs, LoginResponse
 from .utilities import coerce_patient_id
 
 __all__ = ["PyLibreLinkUp"]
+
+
+HEADERS: dict[str, str] = {
+    "accept-encoding": "gzip",
+    "cache-control": "no-cache",
+    "connection": "Keep-Alive",
+    "content-type": "application/json",
+    "product": "llu.android",
+    "version": "4.12.0",
+}
 
 
 class PyLibreLinkUp:
@@ -34,15 +46,7 @@ class PyLibreLinkUp:
     email: str
     password: str
     token: str | None
-
-    _HEADERS = {
-        "accept-encoding": "gzip",
-        "cache-control": "no-cache",
-        "connection": "Keep-Alive",
-        "content-type": "application/json",
-        "product": "llu.android",
-        "version": "4.7.0",
-    }
+    account_id_hash: str | None
 
     def __init__(self, email: str, password: str, api_url: APIUrl = APIUrl.US) -> None:
         """
@@ -60,7 +64,54 @@ class PyLibreLinkUp:
         self.email = email or ""
         self.password = password or ""
         self.token = None
+        self.account_id_hash = None
         self.api_url: str = api_url.value
+
+    def _call_api(self, url: str = None) -> dict:
+        """Calls the LibreLinkUp API and returns the response
+
+        :type url: str
+        :rtype: object
+        """
+        r = requests.get(url=url, headers=self._get_headers())
+        r.raise_for_status()
+        data = r.json()
+        return data
+
+    def _set_token(self, token: str):
+        """Saves the token for future requests."""
+        self.token = token
+
+    def _set_account_id_hash(self, account_id: str):
+        """Saves the account_id_hash for future requests."""
+        self.account_id_hash = hashlib.sha256(account_id.encode()).hexdigest()
+
+    def _get_graph_data_json(self, patient_id: UUID) -> dict:
+        """Requests and returns patient graph data
+
+        :param patient_id: UUID
+        :return:
+        """
+        return self._call_api(url=f"{self.api_url}/llu/connections/{patient_id}/graph")
+
+    def _get_headers(self) -> dict:
+        """Returns the headers for the request."""
+        headers = HEADERS.copy()
+        if self.token:
+            headers.update({"authorization": "Bearer " + self.token})
+        if self.account_id_hash:
+            headers.update({"account-id": self.account_id_hash})
+        return headers
+
+    def _get_logbook_json(self, patient_id: UUID) -> dict:
+        """Requests and returns patient logbook data
+
+        :param patient_id: UUID
+        :return:
+        """
+        return self._call_api(
+            url=f"{self.api_url}/llu/connections/{patient_id}/logbook"
+        )
 
     def authenticate(self) -> None:
         """Authenticate with the LibreLinkUp API
@@ -69,7 +120,7 @@ class PyLibreLinkUp:
         """
         r = requests.post(
             url=f"{self.api_url}/llu/auth/login",
-            headers=self._HEADERS,
+            headers=self._get_headers(),
             json=self.login_args.model_dump(),
         )
         r.raise_for_status()
@@ -89,22 +140,11 @@ class PyLibreLinkUp:
                 raise EmailVerificationError()
 
         try:
-            self.token = data["data"]["authTicket"]["token"]
-            self._HEADERS.update({"authorization": "Bearer " + self.token})
-
-        except KeyError:
+            login_response = LoginResponse.model_validate(data)
+        except ValidationError:
             raise AuthenticationError("Invalid login credentials")
-
-    def _call_api(self, url: str = None) -> dict:
-        """Calls the LibreLinkUp API and returns the response
-
-        :type url: str
-        :rtype: object
-        """
-        r = requests.get(url=url, headers=self._HEADERS)
-        r.raise_for_status()
-        data = r.json()
-        return data
+        self._set_token(login_response.data.authTicket.token)
+        self._set_account_id_hash(login_response.data.user.id)
 
     def get_patients(self) -> list[Patient]:
         """Requests and returns patient data
@@ -114,24 +154,6 @@ class PyLibreLinkUp:
         """
         data = self._call_api(url=f"{self.api_url}/llu/connections")
         return [Patient.model_validate(patient) for patient in data["data"]]
-
-    def _get_graph_data_json(self, patient_id: UUID) -> dict:
-        """Requests and returns patient graph data
-
-        :param patient_id: UUID
-        :return:
-        """
-        return self._call_api(url=f"{self.api_url}/llu/connections/{patient_id}/graph")
-
-    def _get_logbook_json(self, patient_id: UUID) -> dict:
-        """Requests and returns patient logbook data
-
-        :param patient_id: UUID
-        :return:
-        """
-        return self._call_api(
-            url=f"{self.api_url}/llu/connections/{patient_id}/logbook"
-        )
 
     @authenticated
     def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
