@@ -67,6 +67,52 @@ class PyLibreLinkUp:
         self.account_id_hash = None
         self.api_url: str = api_url.value
 
+    def _call_api(self, url: str = None) -> dict:
+        """Calls the LibreLinkUp API and returns the response
+
+        :type url: str
+        :rtype: object
+        """
+        r = requests.get(url=url, headers=self._get_headers())
+        r.raise_for_status()
+        data = r.json()
+        return data
+
+    def _set_token(self, token: str):
+        """Saves the token for future requests."""
+        self.token = token
+
+    def _set_account_id_hash(self, account_id: str):
+        """Saves the account_id_hash for future requests."""
+        self.account_id_hash = hashlib.sha256(account_id.encode()).hexdigest()
+
+    def _get_graph_data_json(self, patient_id: UUID) -> dict:
+        """Requests and returns patient graph data
+
+        :param patient_id: UUID
+        :return:
+        """
+        return self._call_api(url=f"{self.api_url}/llu/connections/{patient_id}/graph")
+
+    def _get_headers(self) -> dict:
+        """Returns the headers for the request."""
+        headers = HEADERS.copy()
+        if self.token:
+            headers.update({"authorization": "Bearer " + self.token})
+        if self.account_id_hash:
+            headers.update({"account-id": self.account_id_hash})
+        return headers
+
+    def _get_logbook_json(self, patient_id: UUID) -> dict:
+        """Requests and returns patient logbook data
+
+        :param patient_id: UUID
+        :return:
+        """
+        return self._call_api(
+            url=f"{self.api_url}/llu/connections/{patient_id}/logbook"
+        )
+
     def authenticate(self) -> None:
         """Authenticate with the LibreLinkUp API
 
@@ -100,30 +146,6 @@ class PyLibreLinkUp:
         self._set_token(login_response.data.authTicket.token)
         self._set_account_id_hash(login_response.data.user.id)
 
-    def _set_token(self, token: str):
-        """Saves the token for future requests."""
-        self.token = token
-
-    def _get_headers(self) -> dict:
-        """Returns the headers for the request."""
-        headers = HEADERS.copy()
-        if self.token:
-            headers.update({"authorization": "Bearer " + self.token})
-        if self.account_id_hash:
-            headers.update({"account-id": self.account_id_hash})
-        return headers
-
-    def _call_api(self, url: str = None) -> dict:
-        """Calls the LibreLinkUp API and returns the response
-
-        :type url: str
-        :rtype: object
-        """
-        r = requests.get(url=url, headers=self._get_headers())
-        r.raise_for_status()
-        data = r.json()
-        return data
-
     def get_patients(self) -> list[Patient]:
         """Requests and returns patient data
 
@@ -132,24 +154,6 @@ class PyLibreLinkUp:
         """
         data = self._call_api(url=f"{self.api_url}/llu/connections")
         return [Patient.model_validate(patient) for patient in data["data"]]
-
-    def _get_graph_data_json(self, patient_id: UUID) -> dict:
-        """Requests and returns patient graph data
-
-        :param patient_id: UUID
-        :return:
-        """
-        return self._call_api(url=f"{self.api_url}/llu/connections/{patient_id}/graph")
-
-    def _get_logbook_json(self, patient_id: UUID) -> dict:
-        """Requests and returns patient logbook data
-
-        :param patient_id: UUID
-        :return:
-        """
-        return self._call_api(
-            url=f"{self.api_url}/llu/connections/{patient_id}/logbook"
-        )
 
     @authenticated
     def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
@@ -222,7 +226,3 @@ class PyLibreLinkUp:
         response_json = self._get_logbook_json(patient_id)
 
         return LogbookResponse.model_validate(response_json).data
-
-    def _set_account_id_hash(self, account_id: str):
-        """Saves the account_id_hash for future requests."""
-        self.account_id_hash = hashlib.sha256(account_id.encode()).hexdigest()
