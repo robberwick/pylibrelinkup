@@ -2,8 +2,8 @@ from datetime import UTC, datetime
 from enum import IntEnum
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
-from pydantic.alias_generators import to_camel, to_pascal
+from pydantic import ConfigDict, Field, field_validator
+from pydantic.alias_generators import to_pascal
 from pydantic_core.core_schema import ValidationInfo
 
 __all__ = [
@@ -18,16 +18,11 @@ __all__ = [
     "Std",
 ]
 
+from pylibrelinkup.models.base import ConfigBaseModel
 
-class Patient(BaseModel):
+
+class Patient(ConfigBaseModel):
     """Patient class to store patient data."""
-
-    model_config = ConfigDict(
-        str_strip_whitespace=True,
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True,
-    )
 
     id: UUID
     patient_id: UUID
@@ -49,14 +44,13 @@ class Trend(IntEnum):
     UP_FAST: int = 5
 
 
-class GlucoseMeasurement(BaseModel):
+class GlucoseMeasurement(ConfigBaseModel):
     """GlucoseMeasurement class to store glucose measurement data."""
 
+    # Glucose measurements _mostly_ use PascalCase, instead of camelCase because
+    # ¯\_(ツ)_/¯
     model_config = ConfigDict(
-        str_strip_whitespace=True,
         alias_generator=to_pascal,
-        populate_by_name=True,
-        from_attributes=True,
     )
 
     factory_timestamp: datetime = Field(None)
@@ -97,13 +91,9 @@ class GlucoseMeasurementTrend(GlucoseMeasurement):
         return f"{super().__str__()} {self.trend_arrow}"
 
 
-class F(BaseModel):
+class F(ConfigBaseModel):
     """F class to store F data."""
 
-    model_config = ConfigDict(
-        from_attributes=True,
-    )
-
     th: int = Field(default=0)
     thmm: float = Field(default=0.0)
     d: int = Field(default=0)
@@ -111,13 +101,9 @@ class F(BaseModel):
     tlmm: float = Field(default=0.0)
 
 
-class L(BaseModel):
+class L(ConfigBaseModel):
     """L class to store L data."""
 
-    model_config = ConfigDict(
-        from_attributes=True,
-    )
-
     th: int = Field(default=0)
     thmm: float = Field(default=0.0)
     d: int = Field(default=0)
@@ -125,12 +111,8 @@ class L(BaseModel):
     tlmm: float = Field(default=0.0)
 
 
-class H(BaseModel):
+class H(ConfigBaseModel):
     """H class to store H data."""
-
-    model_config = ConfigDict(
-        from_attributes=True,
-    )
 
     th: int = Field(default=0)
     thmm: float = Field(default=0.0)
@@ -138,23 +120,15 @@ class H(BaseModel):
     f: float = Field(default=0.0)
 
 
-class Nd(BaseModel):
+class Nd(ConfigBaseModel):
     """Nd class to store Nd data."""
-
-    model_config = ConfigDict(
-        from_attributes=True,
-    )
 
     i: int = Field(default=0)
     r: int = Field(default=0)
     l: int = Field(default=0)
 
 
-class Std(BaseModel):
+class Std(ConfigBaseModel):
     """Std class to store Std data."""
 
-    ...
-    model_config = ConfigDict(
-        from_attributes=True,
-    )
     sd: bool | None = Field(default=None)

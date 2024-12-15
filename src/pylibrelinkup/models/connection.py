@@ -1,9 +1,9 @@
 import json
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
-from pydantic.alias_generators import to_camel
+from pydantic import Field
 
+from .base import ConfigBaseModel
 from .config import AlarmRules
 from .data import GlucoseMeasurement
 from .hardware import ActiveSensor, PatientDevice, Sensor
@@ -11,15 +11,8 @@ from .hardware import ActiveSensor, PatientDevice, Sensor
 __all__ = ["GraphResponse", "LogbookResponse"]
 
 
-class Connection(BaseModel):
+class Connection(ConfigBaseModel):
     """Connection class to store connection data."""
-
-    model_config = ConfigDict(
-        str_strip_whitespace=True,
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True,
-    )
 
     id: UUID
     patient_id: UUID
@@ -39,45 +32,24 @@ class Connection(BaseModel):
     created: int = Field(default=0)
 
 
-class Data(BaseModel):
+class Data(ConfigBaseModel):
     """Data class to store connection data."""
-
-    model_config = ConfigDict(
-        str_strip_whitespace=True,
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True,
-    )
 
     connection: Connection
     active_sensors: list[ActiveSensor] = Field(alias="activeSensors")
     graph_data: list[GlucoseMeasurement] = Field(alias="graphData")
 
 
-class Ticket(BaseModel):
+class Ticket(ConfigBaseModel):
     """TicketData class to store ticket data."""
-
-    model_config = ConfigDict(
-        str_strip_whitespace=True,
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True,
-    )
 
     token: str = Field(default="")
     expires: int = Field(default=0)
     duration: int = Field(default=0)
 
 
-class GraphResponse(BaseModel):
+class GraphResponse(ConfigBaseModel):
     """GraphResponse class to store API graph data endpoint response."""
-
-    model_config = ConfigDict(
-        str_strip_whitespace=True,
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True,
-    )
 
     status: int = Field(default=0)
     data: Data
@@ -99,15 +71,8 @@ class GraphResponse(BaseModel):
         return self.data.model_dump_json()
 
 
-class LogbookResponse(BaseModel):
+class LogbookResponse(ConfigBaseModel):
     """LogbookResponse class to store API logbook data endpoint response."""
-
-    model_config = ConfigDict(
-        str_strip_whitespace=True,
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True,
-    )
 
     status: int
     data: list[GlucoseMeasurement]
