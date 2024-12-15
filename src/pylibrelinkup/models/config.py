@@ -1,20 +1,13 @@
-from pydantic import BaseModel, ConfigDict, Field
-from pydantic.alias_generators import to_camel
+from pydantic import Field
 
+from pylibrelinkup.models.base import ConfigBaseModel
 from pylibrelinkup.models.data import F, H, L, Nd, Std
 
 __all__ = ["AlarmRules", "FixedLowAlarmValues"]
 
 
-class AlarmRules(BaseModel):
+class AlarmRules(ConfigBaseModel):
     """AlarmRules class to store alarm rules data."""
-
-    model_config = ConfigDict(
-        str_strip_whitespace=True,
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True,
-    )
 
     c: bool = Field(default=False)
     h: H
@@ -26,13 +19,8 @@ class AlarmRules(BaseModel):
     std: Std
 
 
-class FixedLowAlarmValues(BaseModel):
+class FixedLowAlarmValues(ConfigBaseModel):
     """FixedLowAlarmValues class to store fixed alarm values."""
-
-    model_config = ConfigDict(
-        populate_by_name=True,
-        from_attributes=True,
-    )
 
     mgdl: int = Field(default=0)
     mmoll: float = Field(default=0.0)
