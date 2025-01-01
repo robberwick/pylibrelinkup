@@ -2,6 +2,11 @@
 
 `pylibrelinkup` is a Python client for the LibreLinkUp API, which allows you to interact with the LibreLinkUp service to retrieve glucose data and other related information. This project is a Python implementation inspired by the [libre-link-up-api-client](https://github.com/DiaKEM/libre-link-up-api-client) project.
 
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pylibrelinkup) ![PyPI - Version](https://img.shields.io/pypi/v/pylibrelinkup) ![PyPI - License](https://img.shields.io/pypi/l/pylibrelinkup) ![Read the Docs](https://img.shields.io/readthedocs/pylibrelinkup) ![PyPI - Downloads](https://img.shields.io/pypi/dm/pylibrelinkup) 
+
+
+
+
 ## Installation
 
 To install `pylibrelinkup`, you can use `pip`:
