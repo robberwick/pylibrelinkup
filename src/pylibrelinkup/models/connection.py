@@ -1,7 +1,9 @@
 import json
+from typing import Any, Self
 from uuid import UUID
 
-from pydantic import Field
+from pydantic import Field, ValidationError, model_validator
+from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from .base import ConfigBaseModel
 from .config import AlarmRules
@@ -9,6 +11,8 @@ from .data import GlucoseMeasurement
 from .hardware import ActiveSensor, PatientDevice, Sensor
 
 __all__ = ["GraphResponse", "LogbookResponse"]
+
+from ..exceptions import PatientNotFoundError
 
 
 class Connection(ConfigBaseModel):
@@ -55,6 +59,28 @@ class GraphResponse(ConfigBaseModel):
     data: Data
     ticket: Ticket
 
+    @model_validator(mode="wrap")
+    @classmethod
+    def validate_api_response(
+        cls, data: Any, handler: ModelWrapValidatorHandler[Self]
+    ) -> Self:
+        try:
+            return handler(data)
+        except ValidationError:
+            # TODO: Add logging
+            # TODO: Extend this to handle other exceptions e.g. redirections, terms of use, etc.
+            # if the data is a dictionary, and it should contain an "error" and "status" key
+            # match against the status to determine what exception to raise
+            # if there's no match, raise the original exception
+            if isinstance(data, dict):
+                match data:
+                    case {
+                        "status": 4
+                    }:  # 4 is the status code for "couldNotLoadPatient"
+                        raise PatientNotFoundError()
+            # No match, raise the original exception
+            raise
+
     @property
     def current(self) -> GlucoseMeasurement:
         """Returns the current glucose measurement."""
@@ -84,3 +110,24 @@ class LogbookResponse(ConfigBaseModel):
         return json.dumps(
             [json.loads(measurement.model_dump_json()) for measurement in self.data]
         )
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def validate_api_response(
+        cls, data: Any, handler: ModelWrapValidatorHandler[Self]
+    ) -> Self:
+        try:
+            return handler(data)
+        except ValidationError:
+            # TODO: Add logging
+            # if the data is a dictionary, and it should contain an "error" and "status" key
+            # match against the status to determine what exception to raise
+            # if there's no match, raise the original exception
+            if isinstance(data, dict):
+                match data:
+                    case {
+                        "status": 4
+                    }:  # 4 is the status code for "couldNotLoadPatient"
+                        raise PatientNotFoundError()
+            # No match, raise the original exception
+            raise

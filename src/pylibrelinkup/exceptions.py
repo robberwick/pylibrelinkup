@@ -42,3 +42,10 @@ class EmailVerificationError(PyLibreLinkUpError):
 
     def __init__(self):
         super().__init__("User needs to verify their email. ")
+
+
+class PatientNotFoundError(PyLibreLinkUpError):
+    """Raised when a patient with the provided patient_id is not found."""
+
+    def __init__(self):
+        super().__init__("Patient not found")
