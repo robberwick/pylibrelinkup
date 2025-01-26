@@ -52,12 +52,16 @@ class Ticket(ConfigBaseModel):
     duration: int = Field(default=0)
 
 
-class GraphResponse(ConfigBaseModel):
-    """GraphResponse class to store API graph data endpoint response."""
+class APIResponse(ConfigBaseModel):
+    """Base model for API responses."""
 
     status: int = Field(default=0)
-    data: Data
     ticket: Ticket
+
+    @property
+    def raw(self):
+        """Returns the raw JSON data returned by the API."""
+        return self.data.model_dump_json()
 
     @model_validator(mode="wrap")
     @classmethod
@@ -81,6 +85,12 @@ class GraphResponse(ConfigBaseModel):
             # No match, raise the original exception
             raise
 
+
+class GraphResponse(APIResponse):
+    """GraphResponse class to store API graph data endpoint response."""
+
+    data: Data
+
     @property
     def current(self) -> GlucoseMeasurement:
         """Returns the current glucose measurement."""
@@ -91,18 +101,11 @@ class GraphResponse(ConfigBaseModel):
         """Returns the historical glucose measurements."""
         return self.data.graph_data
 
-    @property
-    def raw(self):
-        """Returns the raw JSON data returned by the API."""
-        return self.data.model_dump_json()
 
-
-class LogbookResponse(ConfigBaseModel):
+class LogbookResponse(APIResponse):
     """LogbookResponse class to store API logbook data endpoint response."""
 
-    status: int
     data: list[GlucoseMeasurement]
-    ticket: Ticket
 
     @property
     def raw(self):
@@ -110,24 +113,3 @@ class LogbookResponse(ConfigBaseModel):
         return json.dumps(
             [json.loads(measurement.model_dump_json()) for measurement in self.data]
         )
-
-    @model_validator(mode="wrap")
-    @classmethod
-    def validate_api_response(
-        cls, data: Any, handler: ModelWrapValidatorHandler[Self]
-    ) -> Self:
-        try:
-            return handler(data)
-        except ValidationError:
-            # TODO: Add logging
-            # if the data is a dictionary, and it should contain an "error" and "status" key
-            # match against the status to determine what exception to raise
-            # if there's no match, raise the original exception
-            if isinstance(data, dict):
-                match data:
-                    case {
-                        "status": 4
-                    }:  # 4 is the status code for "couldNotLoadPatient"
-                        raise PatientNotFoundError()
-            # No match, raise the original exception
-            raise
