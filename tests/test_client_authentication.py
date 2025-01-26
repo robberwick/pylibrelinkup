@@ -142,3 +142,18 @@ def test_redirection_response_raises_redirect_error(
 
     with pytest.raises(RedirectError):
         pylibrelinkup_client.client.authenticate()
+
+
+def test_realworldevidence_consent_in_login_response(
+    mocked_responses, pylibrelinkup_client, get_response_json
+):
+    """Test that the authenticate method raises an error when the user needs to accept the real world evidence consent."""
+
+    mocked_responses.add(
+        responses.POST,
+        f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
+        json=get_response_json("realworldevidence_consent_response.json"),
+        status=200,
+    )
+
+    pylibrelinkup_client.client.authenticate()

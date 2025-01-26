@@ -1,0 +1,82 @@
+{
+  "status": 0,
+  "data": {
+    "user": {
+      "id": "<Id>",
+      "firstName": "<name>",
+      "lastName": "<name>",
+      "email": "<email>",
+      "country": "GB",
+      "uiLanguage": "en-GB",
+      "communicationLanguage": "en-GB",
+      "accountType": "pat",
+      "uom": "0",
+      "dateFormat": "2",
+      "timeFormat": "2",
+      "emailDay": [
+        1
+      ],
+      "system": {
+        "messages": {
+          "appReviewBanner": 1704319358,
+          "firstUsePhoenix": 1704288789,
+          "firstUsePhoenixReportsDataMerged": 1704288789,
+          "lluGettingStartedBanner": 1704319384,
+          "lluNewFeatureModal": 1704319219,
+          "lvWebPostRelease": "3.16.19",
+          "streamingTourMandatory": 1704319433
+        }
+      },
+      "details": {},
+      "twoFactor": {
+        "primaryMethod": "phone",
+        "primaryValue": "<number>",
+        "secondaryMethod": "email",
+        "secondaryValue": "<email>"
+      },
+      "created": 1704288789,
+      "lastLogin": 1737891119,
+      "programs": {},
+      "dateOfBirth": 29894400,
+      "practices": {},
+      "devices": {
+        "<device id>": {
+          "id": "<device id>",
+          "nickname": "",
+          "sn": "<sn>",
+          "type": 40066,
+          "uploadDate": 1737891498
+        }
+      },
+      "consents": {
+        "realWorldEvidence": {
+          "policyAccept": 1737890544,
+          "declined": true,
+          "touAccept": 0,
+          "history": [
+            {
+              "policyAccept": 1704288796
+            },
+            {
+              "policyAccept": 1737890544,
+              "declined": true
+            }
+          ]
+        }
+      }
+    },
+    "messages": {
+      "unread": 0
+    },
+    "notifications": {
+      "unresolved": 0
+    },
+    "authTicket": {
+      "token": "parp",
+      "expires": 1753443551,
+      "duration": 15552000000
+    },
+    "invitations": null,
+    "trustedDeviceToken": ""
+  }
+}
