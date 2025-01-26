@@ -1,7 +1,9 @@
 import json
+from typing import Any, Self
 from uuid import UUID
 
-from pydantic import Field
+from pydantic import Field, ValidationError, model_validator
+from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from .base import ConfigBaseModel
 from .config import AlarmRules
@@ -9,6 +11,8 @@ from .data import GlucoseMeasurement
 from .hardware import ActiveSensor, PatientDevice, Sensor
 
 __all__ = ["GraphResponse", "LogbookResponse"]
+
+from ..exceptions import PatientNotFoundError
 
 
 class Connection(ConfigBaseModel):
@@ -48,12 +52,44 @@ class Ticket(ConfigBaseModel):
     duration: int = Field(default=0)
 
 
-class GraphResponse(ConfigBaseModel):
-    """GraphResponse class to store API graph data endpoint response."""
+class APIResponse(ConfigBaseModel):
+    """Base model for API responses."""
 
     status: int = Field(default=0)
-    data: Data
     ticket: Ticket
+
+    @property
+    def raw(self):
+        """Returns the raw JSON data returned by the API."""
+        return self.data.model_dump_json()
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def validate_api_response(
+        cls, data: Any, handler: ModelWrapValidatorHandler[Self]
+    ) -> Self:
+        try:
+            return handler(data)
+        except ValidationError:
+            # TODO: Add logging
+            # TODO: Extend this to handle other exceptions e.g. redirections, terms of use, etc.
+            # if the data is a dictionary, and it should contain an "error" and "status" key
+            # match against the status to determine what exception to raise
+            # if there's no match, raise the original exception
+            if isinstance(data, dict):
+                match data:
+                    case {
+                        "status": 4
+                    }:  # 4 is the status code for "couldNotLoadPatient"
+                        raise PatientNotFoundError()
+            # No match, raise the original exception
+            raise
+
+
+class GraphResponse(APIResponse):
+    """GraphResponse class to store API graph data endpoint response."""
+
+    data: Data
 
     @property
     def current(self) -> GlucoseMeasurement:
@@ -65,18 +101,11 @@ class GraphResponse(ConfigBaseModel):
         """Returns the historical glucose measurements."""
         return self.data.graph_data
 
-    @property
-    def raw(self):
-        """Returns the raw JSON data returned by the API."""
-        return self.data.model_dump_json()
 
-
-class LogbookResponse(ConfigBaseModel):
+class LogbookResponse(APIResponse):
     """LogbookResponse class to store API logbook data endpoint response."""
 
-    status: int
     data: list[GlucoseMeasurement]
-    ticket: Ticket
 
     @property
     def raw(self):

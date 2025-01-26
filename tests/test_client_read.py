@@ -3,7 +3,7 @@ from uuid import UUID
 import pytest
 import responses
 
-from pylibrelinkup import AuthenticationError, GraphResponse
+from pylibrelinkup import AuthenticationError, GraphResponse, PatientNotFoundError
 from tests.conftest import graph_response_json
 from tests.factories import PatientFactory
 
@@ -170,3 +170,22 @@ def test_read_response_no_alarm_rules_c_returns_connection_response(
         str(result.data.connection.id)
         == graph_response_no_alarm_rules_c_json["data"]["connection"]["id"]
     )
+
+
+def test_patient_id_not_found_raises_patient_not_found_error(
+    mocked_responses, pylibrelinkup_client, get_response_json
+):
+    """Test that the read method raises PatientNotFoundError for a patient_id not found."""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+
+    mocked_responses.add(
+        responses.GET,
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        json=get_response_json("terms_of_use_response.json"),
+        status=200,
+    )
+
+    pylibrelinkup_client.client.token = "not_a_token"
+
+    with pytest.raises(PatientNotFoundError):
+        pylibrelinkup_client.client.read(patient_id)

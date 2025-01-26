@@ -3,7 +3,7 @@ from uuid import UUID
 import pytest
 import responses
 
-from pylibrelinkup import AuthenticationError, GraphResponse
+from pylibrelinkup import AuthenticationError, PatientNotFoundError
 from pylibrelinkup.models.data import GlucoseMeasurement
 from tests.conftest import graph_response_json
 from tests.factories import PatientFactory
@@ -167,3 +167,24 @@ def test_latest_response_no_alarm_rules_c_returns_glucose_measurement(
             "glucoseMeasurement"
         ]["ValueInMgPerDl"]
     )
+
+
+def test_latest_patient_not_found_raises_patient_not_found_error(
+    mocked_responses, pylibrelinkup_client, get_response_json
+):
+    """Test that the read method raises PatientNotFoundError for a patient not found."""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+
+    mocked_responses.add(
+        responses.GET,
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        json=get_response_json("terms_of_use_response.json"),
+        status=200,
+    )
+
+    pylibrelinkup_client.client.token = "not_a_token"
+
+    with pytest.raises(
+        PatientNotFoundError, match="Patient not found"
+    ):  # PatientNotFoundError is a ValueError
+        pylibrelinkup_client.client.latest(patient_id)
