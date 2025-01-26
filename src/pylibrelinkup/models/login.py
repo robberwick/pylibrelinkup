@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 __all__ = [
     "Llu",
@@ -26,8 +26,21 @@ class Llu(BaseModel):
     touAccept: int = Field(default=0)
 
 
+class HistoryItem(BaseModel):
+    policyAccept: int = Field(default=0)
+    declined: bool | None = None
+
+
+class RealWorldEvidence(BaseModel):
+    policyAccept: int = Field(default=0)
+    declined: bool = False
+    touAccept: int = Field(default=0)
+    history: List[HistoryItem] = []
+
+
 class Consents(BaseModel):
-    llu: Llu
+    llu: Llu = Llu()
+    realWorldEvidence: RealWorldEvidence = RealWorldEvidence()
 
 
 class SystemMessages(BaseModel):
@@ -87,6 +100,10 @@ class Data(BaseModel):
     notifications: Notifications
     authTicket: AuthTicket
     invitations: List[str]
+
+    @field_validator("invitations", mode="before")
+    def coerce_null_to_empty_list(cls, v):
+        return v if v is not None else []
 
 
 class LoginResponse(BaseModel):
