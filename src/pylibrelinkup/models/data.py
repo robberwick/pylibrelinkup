@@ -53,8 +53,8 @@ class GlucoseMeasurement(ConfigBaseModel):
         alias_generator=to_pascal,
     )
 
-    factory_timestamp: datetime = Field(None)
-    timestamp: datetime = Field(None)
+    factory_timestamp: datetime
+    timestamp: datetime
     type: int = Field(default=0)
     value_in_mg_per_dl: float = Field(default=0.0)
     measurement_color: int = Field(default=0)
