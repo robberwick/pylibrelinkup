@@ -56,3 +56,7 @@ target_version = ['py311']
 
 [tool.isort]
 profile = "black"
+
+[[tool.mypy.overrides]]
+module = "setuptools_scm"
+ignore_missing_imports = true
