@@ -37,11 +37,11 @@ class Patient(ConfigBaseModel):
 
 
 class Trend(IntEnum):
-    DOWN_FAST: int = 1
-    DOWN_SLOW: int = 2
-    STABLE: int = 3
-    UP_SLOW: int = 4
-    UP_FAST: int = 5
+    DOWN_FAST = 1
+    DOWN_SLOW = 2
+    STABLE = 3
+    UP_SLOW = 4
+    UP_FAST = 5
 
 
 class GlucoseMeasurement(ConfigBaseModel):
