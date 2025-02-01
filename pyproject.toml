@@ -38,7 +38,7 @@ requires-python = ">=3.11"
 
 [project.optional-dependencies]
 docs = ["sphinx", "sphinx-rtd-theme", "sphinx-autobuild", "sphinx-autodoc-typehints", "autodoc_pydantic", "enum-tools[sphinx]", "setuptools_scm"]
-dev = ["black", "isort", "pre-commit"]
+dev = ["black", "isort", "pre-commit", "mypy", "types-requests"]
 test = ["pytest", "pytest-cov", "pytest-mock", "polyfactory", "responses"]
 
 [project.urls]
