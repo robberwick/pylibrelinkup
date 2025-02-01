@@ -1,11 +1,10 @@
-from __future__ import annotations
-
 from uuid import UUID
 
-from pylibrelinkup.models.data import Patient
+from .date_types import PatientIdentifier
+from .models.data import Patient
 
 
-def coerce_patient_id(patient_identifier):
+def coerce_patient_id(patient_identifier: PatientIdentifier) -> UUID:
     invalid_patient_identifier = "Invalid patient_identifier"
     patient_id: UUID | None = None
     if isinstance(patient_identifier, UUID):

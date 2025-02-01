@@ -14,6 +14,7 @@ import requests
 from pydantic import ValidationError
 
 from .api_url import APIUrl
+from .date_types import PatientIdentifier
 from .decorators import authenticated
 from .exceptions import (
     AuthenticationError,
@@ -67,7 +68,7 @@ class PyLibreLinkUp:
         self.account_id_hash = None
         self.api_url: str = api_url.value
 
-    def _call_api(self, url: str = None) -> dict:
+    def _call_api(self, url: str) -> dict:
         """Calls the LibreLinkUp API and returns the response
 
         :type url: str
@@ -156,14 +157,14 @@ class PyLibreLinkUp:
         return [Patient.model_validate(patient) for patient in data["data"]]
 
     @authenticated
-    def read(self, patient_identifier: UUID | str | Patient) -> GraphResponse:
+    def read(self, patient_identifier: PatientIdentifier) -> GraphResponse:
         """
         .. deprecated:: 0.6.0 The read method is deprecated. Instead, please use the graph method for retrieving graph data,"
             "and latest to access the most recently reported glucose measurement
 
         Requests and returns patient data
 
-        :param patient_identifier: UUID | str | Patient : The identifier of the patient.
+        :param patient_identifier: PatientIdentifier : The identifier of the patient.
         :return: The patient data.
         :rtype: GraphResponse
 
@@ -182,12 +183,10 @@ class PyLibreLinkUp:
         return GraphResponse.model_validate(response_json)
 
     @authenticated
-    def graph(
-        self, patient_identifier: UUID | str | Patient
-    ) -> list[GlucoseMeasurement]:
+    def graph(self, patient_identifier: PatientIdentifier) -> list[GlucoseMeasurement]:
         """Requests and returns glucose measurements used to display graph data. Returns approximately the last 12 hours of data.
 
-        :param patient_identifier: UUID | str | Patient: The identifier of the patient.
+        :param patient_identifier: PatientIdentifier: The identifier of the patient.
         :return: A list of glucose measurements.
         :rtype: list[GlucoseMeasurement]
         """
@@ -198,10 +197,10 @@ class PyLibreLinkUp:
         return GraphResponse.model_validate(response_json).history
 
     @authenticated
-    def latest(self, patient_identifier: UUID | str | Patient) -> GlucoseMeasurement:
+    def latest(self, patient_identifier: PatientIdentifier) -> GlucoseMeasurement:
         """Requests and returns the most recent glucose measurement
 
-        :param patient_identifier: UUID | str | Patient: The identifier of the patient.
+        :param patient_identifier: PatientIdentifier: The identifier of the patient.
         :return: The most recent glucose measurement.
         :rtype: GlucoseMeasurement
         """
@@ -213,11 +212,11 @@ class PyLibreLinkUp:
 
     @authenticated
     def logbook(
-        self, patient_identifier: UUID | str | Patient
+        self, patient_identifier: PatientIdentifier
     ) -> list[GlucoseMeasurement]:
         """Requests and returns patient logbook data, containing the measurements associated with glucose events for approximately the last 14 days.
 
-        :param patient_identifier: UUID | str | Patient: The identifier of the patient.
+        :param patient_identifier: PatientIdentifier: The identifier of the patient.
         :return: A list of glucose measurements.
         :rtype: list[GlucoseMeasurement]
         """

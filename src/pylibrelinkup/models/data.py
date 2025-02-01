@@ -37,11 +37,11 @@ class Patient(ConfigBaseModel):
 
 
 class Trend(IntEnum):
-    DOWN_FAST: int = 1
-    DOWN_SLOW: int = 2
-    STABLE: int = 3
-    UP_SLOW: int = 4
-    UP_FAST: int = 5
+    DOWN_FAST = 1
+    DOWN_SLOW = 2
+    STABLE = 3
+    UP_SLOW = 4
+    UP_FAST = 5
 
 
 class GlucoseMeasurement(ConfigBaseModel):
@@ -53,8 +53,8 @@ class GlucoseMeasurement(ConfigBaseModel):
         alias_generator=to_pascal,
     )
 
-    factory_timestamp: datetime = Field(None)
-    timestamp: datetime = Field(None)
+    factory_timestamp: datetime
+    timestamp: datetime
     type: int = Field(default=0)
     value_in_mg_per_dl: float = Field(default=0.0)
     measurement_color: int = Field(default=0)
