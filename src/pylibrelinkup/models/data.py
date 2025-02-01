@@ -10,7 +10,7 @@ __all__ = [
     "Patient",
     "Trend",
     "GlucoseMeasurement",
-    "GlucoseMeasurementTrend",
+    "GlucoseMeasurementWithTrend",
     "F",
     "L",
     "H",
@@ -42,6 +42,17 @@ class Trend(IntEnum):
     STABLE = 3
     UP_SLOW = 4
     UP_FAST = 5
+
+    @property
+    def indicator(self) -> str:
+        arrow_map: dict[Trend, str] = {
+            Trend.DOWN_FAST: "↓",
+            Trend.DOWN_SLOW: "↘",
+            Trend.STABLE: "→",
+            Trend.UP_SLOW: "↗",
+            Trend.UP_FAST: "↑",
+        }
+        return arrow_map[self]
 
 
 class GlucoseMeasurement(ConfigBaseModel):
@@ -82,13 +93,6 @@ class GlucoseMeasurement(ConfigBaseModel):
             # factory_timestamp is in UTC
             datetime_value = datetime_value.replace(tzinfo=UTC)
         return datetime_value
-
-
-class GlucoseMeasurementTrend(GlucoseMeasurement):
-    trend_arrow: Trend
-
-    def __str__(self):
-        return f"{super().__str__()} {self.trend_arrow}"
 
 
 class F(ConfigBaseModel):
@@ -132,3 +136,7 @@ class Std(ConfigBaseModel):
     """Std class to store Std data."""
 
     sd: bool | None = Field(default=None)
+
+
+class GlucoseMeasurementWithTrend(GlucoseMeasurement):
+    trend: Trend = Field(default=Trend.STABLE)
