@@ -7,7 +7,7 @@ from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from .base import ConfigBaseModel
 from .config import AlarmRules
-from .data import GlucoseMeasurement
+from .data import GlucoseMeasurement, GlucoseMeasurementWithTrend
 from .hardware import ActiveSensor, PatientDevice, Sensor
 
 __all__ = ["GraphResponse", "LogbookResponse"]
@@ -29,7 +29,7 @@ class Connection(ConfigBaseModel):
     uom: int = Field(default=0)
     sensor: Sensor
     alarm_rules: AlarmRules
-    glucose_measurement: GlucoseMeasurement
+    glucose_measurement: GlucoseMeasurementWithTrend = Field(alias="glucoseMeasurement")
     glucose_item: GlucoseMeasurement
     glucose_alarm: None
     patient_device: PatientDevice

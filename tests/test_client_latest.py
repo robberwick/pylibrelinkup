@@ -4,7 +4,7 @@ import pytest
 import responses
 
 from pylibrelinkup import AuthenticationError, PatientNotFoundError
-from pylibrelinkup.models.data import GlucoseMeasurement
+from pylibrelinkup.models.data import GlucoseMeasurementWithTrend, Trend
 from tests.conftest import graph_response_json
 from tests.factories import PatientFactory
 
@@ -34,7 +34,7 @@ def test_latest_returns_glucose_measurement_for_valid_uuid(
 
     result = pylibrelinkup_client.client.latest(patient_id)
 
-    assert isinstance(result, GlucoseMeasurement)
+    assert isinstance(result, GlucoseMeasurementWithTrend)
 
     assert (
         result.value_in_mg_per_dl
@@ -42,6 +42,7 @@ def test_latest_returns_glucose_measurement_for_valid_uuid(
             "ValueInMgPerDl"
         ]
     )
+    assert result.trend == Trend.STABLE
 
 
 def test_latest_returns_glucose_measurement_for_valid_patient(
@@ -61,7 +62,7 @@ def test_latest_returns_glucose_measurement_for_valid_patient(
 
     result = pylibrelinkup_client.client.latest(patient)
 
-    assert isinstance(result, GlucoseMeasurement)
+    assert isinstance(result, GlucoseMeasurementWithTrend)
 
     assert (
         result.value_in_mg_per_dl
@@ -69,6 +70,7 @@ def test_latest_returns_glucose_measurement_for_valid_patient(
             "ValueInMgPerDl"
         ]
     )
+    assert result.trend == Trend.STABLE
 
 
 def test_latest_returns_glucose_measurement_for_valid_string(
@@ -88,7 +90,7 @@ def test_latest_returns_glucose_measurement_for_valid_string(
 
     result = pylibrelinkup_client.client.latest(patient_id)
 
-    assert isinstance(result, GlucoseMeasurement)
+    assert isinstance(result, GlucoseMeasurementWithTrend)
 
     assert (
         result.value_in_mg_per_dl
@@ -96,6 +98,7 @@ def test_latest_returns_glucose_measurement_for_valid_string(
             "ValueInMgPerDl"
         ]
     )
+    assert result.trend == Trend.STABLE
 
 
 def test_latest_raises_value_error_for_invalid_uuid_string(
@@ -133,7 +136,7 @@ def test_latest_response_no_sd_returns_glucose_measurement(
 
     result = pylibrelinkup_client.client.latest(patient_id)
 
-    assert isinstance(result, GlucoseMeasurement)
+    assert isinstance(result, GlucoseMeasurementWithTrend)
 
     assert (
         result.value_in_mg_per_dl
@@ -141,6 +144,7 @@ def test_latest_response_no_sd_returns_glucose_measurement(
             "ValueInMgPerDl"
         ]
     )
+    assert result.trend == Trend.STABLE
 
 
 def test_latest_response_no_alarm_rules_c_returns_glucose_measurement(
@@ -160,13 +164,14 @@ def test_latest_response_no_alarm_rules_c_returns_glucose_measurement(
 
     result = pylibrelinkup_client.client.latest(patient_id)
 
-    assert isinstance(result, GlucoseMeasurement)
+    assert isinstance(result, GlucoseMeasurementWithTrend)
     assert (
         result.value_in_mg_per_dl
         == graph_response_no_alarm_rules_c_json["data"]["connection"][
             "glucoseMeasurement"
         ]["ValueInMgPerDl"]
     )
+    assert result.trend == Trend.STABLE
 
 
 def test_latest_patient_not_found_raises_patient_not_found_error(
