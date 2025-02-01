@@ -67,7 +67,7 @@ class PyLibreLinkUp:
         self.account_id_hash = None
         self.api_url: str = api_url.value
 
-    def _call_api(self, url: str = None) -> dict:
+    def _call_api(self, url: str) -> dict:
         """Calls the LibreLinkUp API and returns the response
 
         :type url: str
