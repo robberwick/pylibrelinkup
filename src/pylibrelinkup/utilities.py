@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from .date_types import PatientIdentifier
+from .data_types import PatientIdentifier
 from .models.data import Patient
 
 

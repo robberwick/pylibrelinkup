@@ -14,7 +14,7 @@ import requests
 from pydantic import ValidationError
 
 from .api_url import APIUrl
-from .date_types import PatientIdentifier
+from .data_types import PatientIdentifier
 from .decorators import authenticated
 from .exceptions import (
     AuthenticationError,
