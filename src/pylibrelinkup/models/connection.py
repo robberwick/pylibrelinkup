@@ -92,7 +92,7 @@ class GraphResponse(APIResponse):
     data: Data
 
     @property
-    def current(self) -> GlucoseMeasurement:
+    def current(self) -> GlucoseMeasurementWithTrend:
         """Returns the current glucose measurement."""
         return self.data.connection.glucose_measurement
 
