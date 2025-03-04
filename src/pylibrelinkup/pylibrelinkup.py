@@ -24,7 +24,7 @@ from .exceptions import (
     TermsOfUseError,
 )
 from .models.connection import GraphResponse, LogbookResponse
-from .models.data import GlucoseMeasurement, Patient
+from .models.data import GlucoseMeasurement, GlucoseMeasurementWithTrend, Patient
 from .models.login import LoginArgs, LoginResponse
 from .utilities import coerce_patient_id
 
@@ -197,12 +197,14 @@ class PyLibreLinkUp:
         return GraphResponse.model_validate(response_json).history
 
     @authenticated
-    def latest(self, patient_identifier: PatientIdentifier) -> GlucoseMeasurement:
+    def latest(
+        self, patient_identifier: PatientIdentifier
+    ) -> GlucoseMeasurementWithTrend:
         """Requests and returns the most recent glucose measurement
 
         :param patient_identifier: PatientIdentifier: The identifier of the patient.
         :return: The most recent glucose measurement.
-        :rtype: GlucoseMeasurement
+        :rtype: GlucoseMeasurementWithTrend
         """
         patient_id = coerce_patient_id(patient_identifier)
 
