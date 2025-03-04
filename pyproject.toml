@@ -8,9 +8,9 @@ dynamic = ["version"]
 description = "A client for the Abbott LibreLinkUp API"
 readme = "README.md"
 authors = [
-  { name="Rob Berwick", email="rob.berwick@gmail.com" },
+    { name = "Rob Berwick", email = "rob.berwick@gmail.com" },
 ]
-license = { file="LICENSE" }
+license = { file = "LICENSE" }
 keywords = [
     "librelink",
     "librelinkup",
@@ -31,13 +31,21 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  "requests>=2.31.0",
-  "pydantic>= 2.5.0",
+    "requests>=2.31.0",
+    "pydantic>= 2.5.0",
 ]
 requires-python = ">=3.11"
 
 [project.optional-dependencies]
-docs = ["sphinx", "sphinx-rtd-theme", "sphinx-autobuild", "sphinx-autodoc-typehints", "autodoc_pydantic", "enum-tools[sphinx]", "setuptools_scm"]
+docs = [
+    "sphinx>=8.0.2,<8.1",
+    "sphinx-rtd-theme>=3.0.0rc4,<3.1",
+    "sphinx-autobuild>=2024.10.3,<2025.0",
+    "sphinx-autodoc-typehints>=2.4.4,<2.5",
+    "autodoc_pydantic>=2.2.0,<2.3",
+    "enum-tools[sphinx]>=0.12.0,<0.13",
+    "setuptools_scm>=8.1.0,<8.2"
+]
 dev = ["black", "isort", "pre-commit", "mypy", "flake8", "types-requests"]
 test = ["pytest", "pytest-cov", "pytest-mock", "polyfactory", "responses"]
 
