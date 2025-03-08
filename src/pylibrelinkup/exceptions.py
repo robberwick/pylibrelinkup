@@ -49,3 +49,24 @@ class PatientNotFoundError(PyLibreLinkUpError):
 
     def __init__(self):
         super().__init__("Patient not found")
+
+
+class LLUAPIError(PyLibreLinkUpError):
+    """Raised when the LibreLinkUp API returns an error."""
+
+    def __init__(self, response_code: int, message: str):
+        self.response_code = response_code
+        exception_message = f"LLU API returned error {response_code}: {message}"
+        super().__init__(exception_message)
+
+
+class LLAAPIRateLimitError(LLUAPIError):
+    """Raised when the LibreLinkUp API returns a rate limit error."""
+
+    retry_after: int | None
+
+    def __init__(
+        self, response_code: int, message: str, retry_after: int | None = None
+    ):
+        self.retry_after = retry_after
+        super().__init__(response_code, message)
