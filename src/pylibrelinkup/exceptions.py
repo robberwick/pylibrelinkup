@@ -60,7 +60,7 @@ class LLUAPIError(PyLibreLinkUpError):
         super().__init__(exception_message)
 
 
-class LLAAPIRateLimitError(LLUAPIError):
+class LLUAPIRateLimitError(LLUAPIError):
     """Raised when the LibreLinkUp API returns a rate limit error."""
 
     retry_after: int | None

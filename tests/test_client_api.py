@@ -2,7 +2,7 @@ import pytest
 import responses
 from requests import HTTPError
 
-from pylibrelinkup import LLAAPIRateLimitError
+from pylibrelinkup import LLUAPIRateLimitError
 from tests.conftest import pylibrelinkup_client
 
 
@@ -15,7 +15,7 @@ def test_call_api_with_rate_limit_and_numeric_retry_after(
 
     pylibrelinkup_client.client.token = "test_token"
 
-    with pytest.raises(LLAAPIRateLimitError) as exc_info:
+    with pytest.raises(LLUAPIRateLimitError) as exc_info:
         pylibrelinkup_client.client._call_api(url)
 
     assert exc_info.value.response_code == 429
@@ -34,7 +34,7 @@ def test_call_api_with_rate_limit_and_non_numeric_retry_after(
 
     pylibrelinkup_client.client.token = "test_token"
 
-    with pytest.raises(LLAAPIRateLimitError) as exc_info:
+    with pytest.raises(LLUAPIRateLimitError) as exc_info:
         pylibrelinkup_client.client._call_api(url)
 
     assert exc_info.value.retry_after is None
@@ -49,7 +49,7 @@ def test_call_api_with_rate_limit_and_missing_retry_after(
 
     pylibrelinkup_client.client.token = "test_token"
 
-    with pytest.raises(LLAAPIRateLimitError) as exc_info:
+    with pytest.raises(LLUAPIRateLimitError) as exc_info:
         pylibrelinkup_client.client._call_api(url)
 
     assert exc_info.value.retry_after is None
