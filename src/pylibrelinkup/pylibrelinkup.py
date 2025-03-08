@@ -12,7 +12,9 @@ from uuid import UUID
 
 import requests
 from pydantic import ValidationError
+from requests import HTTPError
 
+from . import LLAAPIRateLimitError
 from .api_url import APIUrl
 from .data_types import PatientIdentifier
 from .decorators import authenticated
@@ -75,7 +77,18 @@ class PyLibreLinkUp:
         :rtype: object
         """
         r = requests.get(url=url, headers=self._get_headers())
-        r.raise_for_status()
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLAAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise
         data = r.json()
         return data
 
