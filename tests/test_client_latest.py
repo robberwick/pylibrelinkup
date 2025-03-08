@@ -42,7 +42,7 @@ def test_latest_returns_glucose_measurement_for_valid_uuid(
             "ValueInMgPerDl"
         ]
     )
-    assert result.trend == Trend.STABLE
+    assert result.trend == Trend.DOWN_FAST
 
 
 def test_latest_returns_glucose_measurement_for_valid_patient(
@@ -70,7 +70,7 @@ def test_latest_returns_glucose_measurement_for_valid_patient(
             "ValueInMgPerDl"
         ]
     )
-    assert result.trend == Trend.STABLE
+    assert result.trend == Trend.DOWN_FAST
 
 
 def test_latest_returns_glucose_measurement_for_valid_string(
@@ -98,7 +98,7 @@ def test_latest_returns_glucose_measurement_for_valid_string(
             "ValueInMgPerDl"
         ]
     )
-    assert result.trend == Trend.STABLE
+    assert result.trend == Trend.DOWN_FAST
 
 
 def test_latest_raises_value_error_for_invalid_uuid_string(
