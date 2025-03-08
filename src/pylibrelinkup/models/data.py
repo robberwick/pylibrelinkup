@@ -139,4 +139,4 @@ class Std(ConfigBaseModel):
 
 
 class GlucoseMeasurementWithTrend(GlucoseMeasurement):
-    trend: Trend = Field(default=Trend.STABLE)
+    trend: Trend = Field(default=Trend.STABLE, alias="TrendArrow")
