@@ -19,18 +19,55 @@ from .api_url import APIUrl
 from .data_types import PatientIdentifier
 from .decorators import authenticated
 from .exceptions import (
+    AccountDeletionError,
+    AlarmDismissalError,
     AuthenticationError,
     EmailVerificationError,
+    EmailVerificationResendError,
+    LLUAPIRateLimitError,
+    MessageDismissalError,
+    PasswordResetError,
     PrivacyPolicyError,
     RedirectError,
+    RegistrationError,
+    SignOutError,
+    TermsAcceptanceError,
     TermsOfUseError,
+)
+from .models.account import (
+    AcceptTermsArgs,
+    AcceptTermsResponse,
+    DeleteAccountArgs,
+    DeleteAccountResponse,
+    DismissAlarmArgs,
+    DismissAlarmResponse,
+    DismissMessageArgs,
+    DismissMessageResponse,
+    PasswordResetArgs,
+    PasswordResetResponse,
+    RegistrationArgs,
+    RegistrationResponse,
+    ResendVerificationArgs,
+    ResendVerificationResponse,
+    SignOutArgs,
+    SignOutResponse,
 )
 from .models.connection import GraphResponse, LogbookResponse
 from .models.data import GlucoseMeasurement, GlucoseMeasurementWithTrend, Patient
 from .models.login import LoginArgs, LoginResponse
 from .utilities import coerce_patient_id
 
-__all__ = ["PyLibreLinkUp"]
+__all__ = [
+    "PyLibreLinkUp",
+    "RegistrationArgs",
+    "PasswordResetArgs", 
+    "ResendVerificationArgs",
+    "DeleteAccountArgs",
+    "AcceptTermsArgs",
+    "SignOutArgs",
+    "DismissMessageArgs",
+    "DismissAlarmArgs",
+]
 
 
 HEADERS: dict[str, str] = {
@@ -240,3 +277,232 @@ class PyLibreLinkUp:
         response_json = self._get_logbook_json(patient_id)
 
         return LogbookResponse.model_validate(response_json).data
+
+    def register_account(self, registration_args: RegistrationArgs) -> RegistrationResponse:
+        """Register a new account with LibreLinkUp.
+
+        :param registration_args: RegistrationArgs: The registration arguments.
+        :return: Registration response.
+        :rtype: RegistrationResponse
+        """
+        r = requests.post(
+            url=f"{self.api_url}/llu/auth/register",
+            headers=self._get_headers(),
+            json=registration_args.model_dump(),
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLUAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise RegistrationError(f"Registration failed: {e}")
+        
+        data = r.json()
+        return RegistrationResponse.model_validate(data)
+
+    def reset_password(self, password_reset_args: PasswordResetArgs) -> PasswordResetResponse:
+        """Request a password reset.
+
+        :param password_reset_args: PasswordResetArgs: The password reset arguments.
+        :return: Password reset response.
+        :rtype: PasswordResetResponse
+        """
+        r = requests.post(
+            url=f"{self.api_url}/llu/auth/forgot-password",
+            headers=self._get_headers(),
+            json=password_reset_args.model_dump(),
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLUAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise PasswordResetError(f"Password reset failed: {e}")
+        
+        data = r.json()
+        return PasswordResetResponse.model_validate(data)
+
+    def resend_verification_email(self, resend_args: ResendVerificationArgs) -> ResendVerificationResponse:
+        """Resend email verification.
+
+        :param resend_args: ResendVerificationArgs: The resend verification arguments.
+        :return: Resend verification response.
+        :rtype: ResendVerificationResponse
+        """
+        r = requests.post(
+            url=f"{self.api_url}/llu/auth/resend-verification",
+            headers=self._get_headers(),
+            json=resend_args.model_dump(),
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLUAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise EmailVerificationResendError(f"Failed to resend verification email: {e}")
+        
+        data = r.json()
+        return ResendVerificationResponse.model_validate(data)
+
+    @authenticated
+    def delete_account(self, delete_args: DeleteAccountArgs) -> DeleteAccountResponse:
+        """Delete the current account.
+
+        :param delete_args: DeleteAccountArgs: The delete account arguments.
+        :return: Delete account response.
+        :rtype: DeleteAccountResponse
+        """
+        r = requests.post(
+            url=f"{self.api_url}/llu/auth/delete-account",
+            headers=self._get_headers(),
+            json=delete_args.model_dump(),
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLUAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise AccountDeletionError(f"Account deletion failed: {e}")
+        
+        data = r.json()
+        return DeleteAccountResponse.model_validate(data)
+
+    @authenticated
+    def accept_terms(self, accept_args: AcceptTermsArgs) -> AcceptTermsResponse:
+        """Accept terms of use or privacy policy.
+
+        :param accept_args: AcceptTermsArgs: The terms acceptance arguments.
+        :return: Accept terms response.
+        :rtype: AcceptTermsResponse
+        """
+        r = requests.post(
+            url=f"{self.api_url}/llu/auth/accept-terms",
+            headers=self._get_headers(),
+            json=accept_args.model_dump(),
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLUAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise TermsAcceptanceError(f"Failed to accept terms: {e}")
+        
+        data = r.json()
+        return AcceptTermsResponse.model_validate(data)
+
+    @authenticated
+    def sign_out(self, sign_out_args: SignOutArgs = SignOutArgs()) -> SignOutResponse:
+        """Sign out from the current session.
+
+        :param sign_out_args: SignOutArgs: The sign out arguments.
+        :return: Sign out response.
+        :rtype: SignOutResponse
+        """
+        r = requests.post(
+            url=f"{self.api_url}/llu/auth/logout",
+            headers=self._get_headers(),
+            json=sign_out_args.model_dump(),
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLUAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise SignOutError(f"Sign out failed: {e}")
+        
+        data = r.json()
+        return SignOutResponse.model_validate(data)
+
+    @authenticated
+    def dismiss_message(self, dismiss_args: DismissMessageArgs) -> DismissMessageResponse:
+        """Dismiss a system message.
+
+        :param dismiss_args: DismissMessageArgs: The dismiss message arguments.
+        :return: Dismiss message response.
+        :rtype: DismissMessageResponse
+        """
+        r = requests.post(
+            url=f"{self.api_url}/llu/messages/dismiss",
+            headers=self._get_headers(),
+            json=dismiss_args.model_dump(),
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLUAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise MessageDismissalError(f"Failed to dismiss message: {e}")
+        
+        data = r.json()
+        return DismissMessageResponse.model_validate(data)
+
+    @authenticated
+    def dismiss_alarm(self, dismiss_args: DismissAlarmArgs) -> DismissAlarmResponse:
+        """Dismiss an alarm.
+
+        :param dismiss_args: DismissAlarmArgs: The dismiss alarm arguments.
+        :return: Dismiss alarm response.
+        :rtype: DismissAlarmResponse
+        """
+        r = requests.post(
+            url=f"{self.api_url}/llu/alarms/dismiss",
+            headers=self._get_headers(),
+            json=dismiss_args.model_dump(),
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 429:
+                retry_after = e.response.headers.get("Retry-After", "Unknown")
+                raise LLUAPIRateLimitError(
+                    response_code=e.response.status_code,
+                    message=f"Too many requests. Please try again later.",
+                    retry_after=int(retry_after) if retry_after.isdigit() else None,
+                )
+            else:
+                raise AlarmDismissalError(f"Failed to dismiss alarm: {e}")
+        
+        data = r.json()
+        return DismissAlarmResponse.model_validate(data)
