@@ -38,8 +38,9 @@ HEADERS: dict[str, str] = {
     "cache-control": "no-cache",
     "connection": "Keep-Alive",
     "content-type": "application/json",
+    "Account-Id": "compute_account_id_hash(user_id)",
     "product": "llu.android",
-    "version": "4.12.0",
+    "version": "4.16.0",
 }
 
 
@@ -168,6 +169,11 @@ class PyLibreLinkUp:
         """
         data = self._call_api(url=f"{self.api_url}/llu/connections")
         return [Patient.model_validate(patient) for patient in data["data"]]
+    
+    def compute_account_id_hash(some_id_str: str) -> str:
+        h = hashlib.sha256()
+        h.update(some_id_str.encode('utf-8'))
+        return h.hexdigest()  # 64-character lowercase hex
 
     @authenticated
     def read(self, patient_identifier: PatientIdentifier) -> GraphResponse:
