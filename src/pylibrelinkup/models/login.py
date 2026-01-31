@@ -1,6 +1,8 @@
 from typing import List
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import Field
+
+from .base import ConfigBaseModel
 
 __all__ = [
     "Llu",
@@ -21,29 +23,29 @@ __all__ = [
 ]
 
 
-class Llu(BaseModel):
+class Llu(ConfigBaseModel):
     policyAccept: int = Field(default=0)
     touAccept: int = Field(default=0)
 
 
-class HistoryItem(BaseModel):
+class HistoryItem(ConfigBaseModel):
     policyAccept: int = Field(default=0)
     declined: bool | None = None
 
 
-class RealWorldEvidence(BaseModel):
+class RealWorldEvidence(ConfigBaseModel):
     policyAccept: int = Field(default=0)
     declined: bool = False
     touAccept: int = Field(default=0)
     history: List[HistoryItem] = []
 
 
-class Consents(BaseModel):
+class Consents(ConfigBaseModel):
     llu: Llu = Llu()
     realWorldEvidence: RealWorldEvidence = RealWorldEvidence()
 
 
-class SystemMessages(BaseModel):
+class SystemMessages(ConfigBaseModel):
     firstUsePhoenix: int = Field(default=0)
     firstUsePhoenixReportsDataMerged: int = Field(default=0)
     lluGettingStartedBanner: int = Field(default=0)
@@ -52,11 +54,11 @@ class SystemMessages(BaseModel):
     lvWebPostRelease: str = Field(default="")
 
 
-class System(BaseModel):
+class System(ConfigBaseModel):
     messages: SystemMessages
 
 
-class User(BaseModel):
+class User(ConfigBaseModel):
     id: str = Field(default="")
     firstName: str = Field(default="")
     lastName: str = Field(default="")
@@ -80,56 +82,52 @@ class User(BaseModel):
     consents: Consents
 
 
-class Notifications(BaseModel):
+class Notifications(ConfigBaseModel):
     unresolved: int = Field(default=0)
 
 
-class DataMessages(BaseModel):
+class DataMessages(ConfigBaseModel):
     unread: int = Field(default=0)
 
 
-class AuthTicket(BaseModel):
+class AuthTicket(ConfigBaseModel):
     token: str = Field(default="")
     expires: int = Field(default=0)
     duration: int = Field(default=0)
 
 
-class Data(BaseModel):
+class Data(ConfigBaseModel):
     user: User
     messages: DataMessages
     notifications: Notifications
     authTicket: AuthTicket
     invitations: List[str]
 
-    @field_validator("invitations", mode="before")
-    def coerce_null_to_empty_list(cls, v):
-        return v if v is not None else []
 
-
-class LoginResponse(BaseModel):
+class LoginResponse(ConfigBaseModel):
     status: int = Field(default=0)
     data: Data
 
 
-class ErrorMessage(BaseModel):
+class ErrorMessage(ConfigBaseModel):
     message: str = Field(default="")
 
 
-class LoginResponseUnauthenticated(BaseModel):
+class LoginResponseUnauthenticated(ConfigBaseModel):
     status: int = Field(default=0)
     error: ErrorMessage
 
 
-class LoginRedirectData(BaseModel):
+class LoginRedirectData(ConfigBaseModel):
     redirect: bool = Field(default=False)
     region: str = Field(default="")
 
 
-class LoginRedirectResponse(BaseModel):
+class LoginRedirectResponse(ConfigBaseModel):
     status: int = Field(default=0)
     data: LoginRedirectData
 
 
-class LoginArgs(BaseModel):
+class LoginArgs(ConfigBaseModel):
     email: str = Field(default="")
     password: str = Field(default="")

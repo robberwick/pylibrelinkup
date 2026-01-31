@@ -157,3 +157,26 @@ def test_realworldevidence_consent_in_login_response(
     )
 
     pylibrelinkup_client.client.authenticate()
+
+
+def test_authenticate_handles_null_emailday(
+    mocked_responses, pylibrelinkup_client, get_response_json
+):
+    """Test that the authenticate method handles None emailDay field correctly.
+
+    Some API responses return None for the emailDay field instead of a list.
+    The generic list validator in ConfigBaseModel should automatically convert
+    None to an empty list, preventing ValidationErrors.
+    """
+    mocked_responses.add(
+        responses.POST,
+        f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
+        json=get_response_json("login_response_null_emailday.json"),
+        status=200,
+    )
+
+    # Should not raise ValidationError
+    pylibrelinkup_client.client.authenticate()
+
+    # Verify authentication succeeded
+    assert pylibrelinkup_client.client.token == "parp"
