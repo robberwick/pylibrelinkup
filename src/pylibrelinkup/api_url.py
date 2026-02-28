@@ -18,6 +18,7 @@ class APIUrl(StrEnum):
     FR = "https://api-fr.libreview.io"
     JP = "https://api-jp.libreview.io"
     LA = "https://api-la.libreview.io"
+    RU = "https://api.libreview.ru"
 
     @classmethod
     def from_string(cls: Type[APIUrl], value: str) -> APIUrl:
