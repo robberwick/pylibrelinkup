@@ -12,7 +12,8 @@ from .hardware import ActiveSensor, PatientDevice, Sensor
 
 __all__ = ["GraphResponse", "LogbookResponse"]
 
-from ..exceptions import PatientNotFoundError
+from ..api_url import APIUrl
+from ..exceptions import PatientNotFoundError, RedirectError
 
 
 class Connection(ConfigBaseModel):
@@ -82,6 +83,8 @@ class APIResponse(ConfigBaseModel):
                         "status": 4
                     }:  # 4 is the status code for "couldNotLoadPatient"
                         raise PatientNotFoundError()
+                    case {"data": {"redirect": True, "region": str(region)}}:
+                        raise RedirectError(APIUrl.from_string(region.upper()))
             # No match, raise the original exception
             raise
 
