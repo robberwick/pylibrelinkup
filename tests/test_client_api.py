@@ -1,8 +1,11 @@
+from uuid import UUID
+
 import pytest
 import responses
 from requests import HTTPError
 
 from pylibrelinkup import LLUAPIRateLimitError
+from pylibrelinkup.exceptions import RedirectError
 from tests.conftest import pylibrelinkup_client
 
 
@@ -79,3 +82,23 @@ def test_call_api_successful_response(mocked_responses, pylibrelinkup_client):
     result = pylibrelinkup_client.client._call_api(url)
 
     assert result == expected_data
+
+
+def test_redirect_response_raises_redirect_error(
+    mocked_responses, pylibrelinkup_client
+):
+    """Test that redirect responses from API endpoints raise RedirectError."""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+    redirect_data = {"status": 0, "data": {"redirect": True, "region": "us"}}
+
+    mocked_responses.add(
+        responses.GET,
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        json=redirect_data,
+        status=200,
+    )
+
+    pylibrelinkup_client.client.token = "not_a_token"
+
+    with pytest.raises(RedirectError):
+        pylibrelinkup_client.client.latest(patient_identifier=patient_id)
