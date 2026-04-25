@@ -2,9 +2,10 @@ from uuid import UUID
 
 import pytest
 import responses
+from pydantic import ValidationError
 from requests import HTTPError
 
-from pylibrelinkup import LLUAPIRateLimitError
+from pylibrelinkup import APIUrl, LLUAPIRateLimitError
 from pylibrelinkup.exceptions import RedirectError
 from tests.conftest import pylibrelinkup_client
 
@@ -84,21 +85,51 @@ def test_call_api_successful_response(mocked_responses, pylibrelinkup_client):
     assert result == expected_data
 
 
+@pytest.mark.parametrize(
+    "endpoint, method_name",
+    [
+        ("graph", "latest"),
+        ("graph", "graph"),
+        ("logbook", "logbook"),
+    ],
+)
 def test_redirect_response_raises_redirect_error(
-    mocked_responses, pylibrelinkup_client
+    mocked_responses, pylibrelinkup_client, endpoint, method_name
 ):
-    """Test that redirect responses from API endpoints raise RedirectError."""
+    """Test that redirect responses from API endpoints raise RedirectError carrying the new region."""
     patient_id = UUID("12345678-1234-5678-1234-567812345678")
-    redirect_data = {"status": 0, "data": {"redirect": True, "region": "us"}}
+    redirect_data = {"status": 0, "data": {"redirect": True, "region": "eu"}}
 
     mocked_responses.add(
         responses.GET,
-        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/{endpoint}",
         json=redirect_data,
         status=200,
     )
 
     pylibrelinkup_client.client.token = "not_a_token"
 
-    with pytest.raises(RedirectError):
+    with pytest.raises(RedirectError) as exc_info:
+        getattr(pylibrelinkup_client.client, method_name)(patient_identifier=patient_id)
+
+    assert exc_info.value.region is APIUrl.EU
+
+
+def test_non_redirect_malformed_response_still_raises_validation_error(
+    mocked_responses, pylibrelinkup_client
+):
+    """Payloads without a redirect flag should fall through to the normal validation path."""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+    malformed_data = {"status": 0, "data": {"redirect": False}}
+
+    mocked_responses.add(
+        responses.GET,
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        json=malformed_data,
+        status=200,
+    )
+
+    pylibrelinkup_client.client.token = "not_a_token"
+
+    with pytest.raises(ValidationError):
         pylibrelinkup_client.client.latest(patient_identifier=patient_id)
