@@ -51,7 +51,13 @@ class PyLibreLinkUp:
     token: str | None
     account_id_hash: str | None
 
-    def __init__(self, email: str, password: str, api_url: APIUrl = APIUrl.US) -> None:
+    def __init__(
+        self,
+        email: str,
+        password: str,
+        api_url: APIUrl = APIUrl.US,
+        user_agent: str | None = None,
+    ) -> None:
         """
         Constructor for the PyLibreLinkUp class.
 
@@ -61,6 +67,8 @@ class PyLibreLinkUp:
         :type password: str
         :param api_url: The regional API URL to use. Defaults to US.
         :type api_url: APIUrl
+        :param user_agent: Optional User-Agent header override.
+        :type user_agent: str | None
         :return: None
         """
         self.login_args: LoginArgs = LoginArgs(email=email, password=password)
@@ -69,6 +77,9 @@ class PyLibreLinkUp:
         self.token = None
         self.account_id_hash = None
         self.api_url: str = api_url.value
+        if user_agent and "\x00" in user_agent:
+            raise ValueError("user_agent must not contain null bytes")
+        self.user_agent: str | None = user_agent
 
     def _call_api(self, url: str) -> dict:
         """Calls the LibreLinkUp API and returns the response
@@ -115,6 +126,8 @@ class PyLibreLinkUp:
             headers.update({"authorization": "Bearer " + self.token})
         if self.account_id_hash:
             headers.update({"account-id": self.account_id_hash})
+        if self.user_agent:
+            headers.update({"User-Agent": self.user_agent})
         return headers
 
     def _get_logbook_json(self, patient_id: UUID) -> dict:
