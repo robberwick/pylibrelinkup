@@ -180,3 +180,23 @@ def test_authenticate_handles_null_emailday(
 
     # Verify authentication succeeded
     assert pylibrelinkup_client.client.token == "parp"
+
+
+def test_authenticate_passes_timeout(mocker):
+    """authenticate must forward self.timeout to requests.post."""
+    import json
+    from pathlib import Path
+
+    login_data = json.loads(
+        (Path(__file__).parent / "data" / "login_response.json").read_text()
+    )
+
+    mock_post = mocker.patch("pylibrelinkup.pylibrelinkup.requests.post")
+    mock_response = mock_post.return_value
+    mock_response.raise_for_status.return_value = None
+    mock_response.json.return_value = login_data
+
+    client = PyLibreLinkUp(email="x@example.com", password="secret", timeout=(3, 15))
+    client.authenticate()
+
+    assert mock_post.call_args.kwargs["timeout"] == client.timeout
