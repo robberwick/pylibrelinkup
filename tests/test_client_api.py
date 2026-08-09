@@ -5,7 +5,7 @@ import responses
 from pydantic import ValidationError
 from requests import HTTPError
 
-from pylibrelinkup import APIUrl, LLUAPIRateLimitError
+from pylibrelinkup import APIUrl, LLUAPIRateLimitError, PyLibreLinkUp
 from pylibrelinkup.exceptions import RedirectError
 from tests.conftest import pylibrelinkup_client
 
@@ -133,3 +133,29 @@ def test_non_redirect_malformed_response_still_raises_validation_error(
 
     with pytest.raises(ValidationError):
         pylibrelinkup_client.client.latest(patient_identifier=patient_id)
+
+
+def test_call_api_passes_default_timeout(mocker):
+    """_call_api must forward the default (10, 30) timeout to requests.get."""
+    mock_get = mocker.patch("pylibrelinkup.pylibrelinkup.requests.get")
+    mock_response = mock_get.return_value
+    mock_response.raise_for_status.return_value = None
+    mock_response.json.return_value = {}
+
+    client = PyLibreLinkUp(email="x@example.com", password="secret")
+    client._call_api("https://example.com/test")
+
+    assert mock_get.call_args.kwargs["timeout"] == (10, 30)
+
+
+def test_call_api_passes_custom_timeout(mocker):
+    """_call_api must forward a caller-supplied timeout tuple to requests.get."""
+    mock_get = mocker.patch("pylibrelinkup.pylibrelinkup.requests.get")
+    mock_response = mock_get.return_value
+    mock_response.raise_for_status.return_value = None
+    mock_response.json.return_value = {}
+
+    client = PyLibreLinkUp(email="x@example.com", password="secret", timeout=(5, 60))
+    client._call_api("https://example.com/test")
+
+    assert mock_get.call_args.kwargs["timeout"] == (5, 60)
