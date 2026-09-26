@@ -37,6 +37,7 @@ class Patient(ConfigBaseModel):
 
 
 class Trend(IntEnum):
+    UNKNOWN = 0
     DOWN_FAST = 1
     DOWN_SLOW = 2
     STABLE = 3
@@ -46,6 +47,7 @@ class Trend(IntEnum):
     @property
     def indicator(self) -> str:
         arrow_map: dict[Trend, str] = {
+            Trend.UNKNOWN: "?",
             Trend.DOWN_FAST: "↓",
             Trend.DOWN_SLOW: "↘",
             Trend.STABLE: "→",
