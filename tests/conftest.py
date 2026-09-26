@@ -43,6 +43,11 @@ def graph_response_no_u_json(get_response_json):
     return get_response_json("graph_response_no_u.json")
 
 
+@pytest.fixture
+def graph_response_unknown_trend_json(get_response_json):
+    return get_response_json("graph_response_unknown_trend.json")
+
+
 @dataclass
 class PyLibreLinkUpClientFixture:
     client: PyLibreLinkUp
