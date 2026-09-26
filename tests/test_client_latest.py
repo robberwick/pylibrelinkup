@@ -1,3 +1,4 @@
+import sys
 from uuid import UUID
 
 import pytest
@@ -5,7 +6,6 @@ import responses
 
 from pylibrelinkup import AuthenticationError, PatientNotFoundError
 from pylibrelinkup.models.data import GlucoseMeasurementWithTrend, Trend
-from tests.conftest import graph_response_json
 from tests.factories import PatientFactory
 
 
@@ -193,3 +193,31 @@ def test_latest_patient_not_found_raises_patient_not_found_error(
         PatientNotFoundError, match="Patient not found"
     ):  # PatientNotFoundError is a ValueError
         pylibrelinkup_client.client.latest(patient_id)
+
+
+def test_latest_response_with_unknown_trend_returns_correct_value(
+    mocked_responses, graph_response_unknown_trend_json, pylibrelinkup_client
+):
+    """Test that a response which returns a zero for the trend value correctly handles it by displaying an unknown"""
+    patient_id = UUID("12345678-1234-5678-1234-567812345678")
+
+    mocked_responses.add(
+        responses.GET,
+        f"{pylibrelinkup_client.api_url.value}/llu/connections/{patient_id}/graph",
+        json=graph_response_unknown_trend_json,
+        status=200,
+    )
+
+    pylibrelinkup_client.client.token = "not_a_token"
+
+    result = pylibrelinkup_client.client.latest(patient_id)
+
+    assert isinstance(result, GlucoseMeasurementWithTrend)
+
+    assert (
+        result.value_in_mg_per_dl
+        == graph_response_unknown_trend_json["data"]["connection"][
+            "glucoseMeasurement"
+        ]["ValueInMgPerDl"]
+    )
+    assert result.trend == Trend.UNKNOWN
