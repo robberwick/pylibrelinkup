@@ -140,3 +140,7 @@ class Std(ConfigBaseModel):
 
 class GlucoseMeasurementWithTrend(GlucoseMeasurement):
     trend: Trend = Field(default=Trend.STABLE, alias="TrendArrow")
+
+    def __str__(self):
+        value = super().__str__()
+        return f"{value} {self.trend.indicator}"
