@@ -50,8 +50,15 @@ class PyLibreLinkUp:
     password: str
     token: str | None
     account_id_hash: str | None
+    timeout: float | tuple[float, float] | None
 
-    def __init__(self, email: str, password: str, api_url: APIUrl = APIUrl.US) -> None:
+    def __init__(
+        self,
+        email: str,
+        password: str,
+        api_url: APIUrl = APIUrl.US,
+        timeout: float | tuple[float, float] | None = (10, 30),
+    ) -> None:
         """
         Constructor for the PyLibreLinkUp class.
 
@@ -61,6 +68,10 @@ class PyLibreLinkUp:
         :type password: str
         :param api_url: The regional API URL to use. Defaults to US.
         :type api_url: APIUrl
+        :param timeout: Request timeout in seconds. A float applies to both connect and
+            read; a ``(connect, read)`` tuple sets them independently. Pass ``None`` to
+            disable timeout. Defaults to ``(10, 30)``.
+        :type timeout: float | tuple[float, float] | None
         :return: None
         """
         self.login_args: LoginArgs = LoginArgs(email=email, password=password)
@@ -69,6 +80,7 @@ class PyLibreLinkUp:
         self.token = None
         self.account_id_hash = None
         self.api_url: str = api_url.value
+        self.timeout = timeout
 
     def _call_api(self, url: str) -> dict:
         """Calls the LibreLinkUp API and returns the response
@@ -76,7 +88,7 @@ class PyLibreLinkUp:
         :type url: str
         :rtype: object
         """
-        r = requests.get(url=url, headers=self._get_headers())
+        r = requests.get(url=url, headers=self._get_headers(), timeout=self.timeout)
         try:
             r.raise_for_status()
         except HTTPError as e:
@@ -136,6 +148,7 @@ class PyLibreLinkUp:
             url=f"{self.api_url}/llu/auth/login",
             headers=self._get_headers(),
             json=self.login_args.model_dump(),
+            timeout=self.timeout,
         )
         r.raise_for_status()
         data = r.json()
