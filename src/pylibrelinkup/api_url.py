@@ -9,7 +9,7 @@ __all__ = ["APIUrl"]
 class APIUrl(StrEnum):
     EU = "https://api-eu.libreview.io"
     EU2 = "https://api-eu2.libreview.io"
-    US = "https://api.libreview.io"
+    US = "https://api-us.libreview.io"
     AE = "https://api-ae.libreview.io"
     AP = "https://api-ap.libreview.io"
     AU = "https://api-au.libreview.io"
