@@ -15,12 +15,21 @@ class AuthenticationError(PyLibreLinkUpError):
 
 class RedirectError(PyLibreLinkUpError):
     """Raised when a redirect is encountered during authentication. This is a signal to retry the request with the new region.
-    The new region is stored in the `region` attribute of the exception, which is an APIUrl enum value.
+    The region code is stored in the `region_code` attribute, and the API host to retry with in the `api_url` attribute.
+    For backwards compatibility, the `region` attribute holds the matching APIUrl enum value, or None if the region has no
+    APIUrl member.
+
+    Prefer `api_url`: `region` reflects the static APIUrl enum, so it may be stale or None.
     """
 
-    def __init__(self, region: APIUrl):
-        self.region = region
-        super().__init__(f"Redirected to {region}")
+    def __init__(self, region_code: str, api_url: str):
+        self.region_code = region_code
+        self.api_url = api_url
+        try:
+            self.region: APIUrl | None = APIUrl.from_string(region_code)
+        except ValueError:
+            self.region = None
+        super().__init__(f"Redirected to {api_url}")
 
 
 class UnknownRegionError(PyLibreLinkUpError):
