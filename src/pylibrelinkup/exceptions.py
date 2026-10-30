@@ -23,6 +23,16 @@ class RedirectError(PyLibreLinkUpError):
         super().__init__(f"Redirected to {region}")
 
 
+class UnknownRegionError(PyLibreLinkUpError):
+    """Raised when a login redirect names a region with no known API host.
+    The region code is stored in the `region` attribute of the exception.
+    """
+
+    def __init__(self, region: str):
+        self.region = region
+        super().__init__(f"Unknown region '{region}'")
+
+
 class TermsOfUseError(PyLibreLinkUpError):
     """Raised when the user needs to accept terms of use."""
 
