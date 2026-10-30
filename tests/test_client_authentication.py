@@ -10,6 +10,7 @@ from pylibrelinkup import (
     TermsOfUseError,
 )
 from pylibrelinkup.exceptions import EmailVerificationError, PrivacyPolicyError
+from pylibrelinkup.regions import DIRECTORY_URL
 from tests.conftest import get_response_json, mocked_responses, pylibrelinkup_client
 
 
@@ -137,6 +138,12 @@ def test_redirection_response_raises_redirect_error(
         responses.POST,
         f"{pylibrelinkup_client.api_url.value}/llu/auth/login",
         json=get_response_json("redirect_response.json"),
+        status=200,
+    )
+    mocked_responses.add(
+        responses.GET,
+        f"{DIRECTORY_URL}/llu/config/country",
+        json=get_response_json("country_config_response.json"),
         status=200,
     )
 

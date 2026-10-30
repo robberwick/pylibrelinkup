@@ -39,3 +39,25 @@ Usage
     print(f"logbook data: ({len(logbook_data)} entries)")
     for measurement in logbook_data:
         print(f"{measurement.value} {measurement.timestamp} {measurement.factory_timestamp}")
+
+
+Regional redirects
+------------------
+
+Accounts are stored on a regional LibreLinkUp server. If you log in on the wrong one, ``authenticate()``
+raises ``RedirectError``. Retry with a new client pointing at ``exc.api_url``:
+
+.. code-block:: python
+
+    from pylibrelinkup import PyLibreLinkUp, RedirectError
+
+    client = PyLibreLinkUp(email='your_username', password='your_password')
+    try:
+        client.authenticate()
+    except RedirectError as exc:
+        client = PyLibreLinkUp(email='your_username', password='your_password', api_url=exc.api_url)
+        client.authenticate()
+
+The host is looked up in the regional map published by the LibreLinkUp API, falling back to the ``APIUrl``
+enum. ``exc.region`` still holds the matching ``APIUrl`` value for backwards compatibility, but may be
+``None`` for regions without an ``APIUrl`` member, so prefer ``exc.api_url``.

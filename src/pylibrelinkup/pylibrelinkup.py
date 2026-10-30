@@ -28,6 +28,7 @@ from .exceptions import (
 from .models.connection import GraphResponse, LogbookResponse
 from .models.data import GlucoseMeasurement, GlucoseMeasurementWithTrend, Patient
 from .models.login import LoginArgs, LoginResponse
+from .regions import resolve_region_host
 from .utilities import coerce_patient_id
 
 __all__ = ["PyLibreLinkUp"]
@@ -51,7 +52,9 @@ class PyLibreLinkUp:
     token: str | None
     account_id_hash: str | None
 
-    def __init__(self, email: str, password: str, api_url: APIUrl = APIUrl.US) -> None:
+    def __init__(
+        self, email: str, password: str, api_url: APIUrl | str = APIUrl.US
+    ) -> None:
         """
         Constructor for the PyLibreLinkUp class.
 
@@ -59,8 +62,8 @@ class PyLibreLinkUp:
         :type email: str
         :param password: The password for the LibreLinkUp account.
         :type password: str
-        :param api_url: The regional API URL to use. Defaults to US.
-        :type api_url: APIUrl
+        :param api_url: The regional API URL to use, as an APIUrl or a host string (e.g. RedirectError.api_url). Defaults to US.
+        :type api_url: APIUrl | APIUrl | str
         :return: None
         """
         self.login_args: LoginArgs = LoginArgs(email=email, password=password)
@@ -68,7 +71,7 @@ class PyLibreLinkUp:
         self.password = password or ""
         self.token = None
         self.account_id_hash = None
-        self.api_url: str = api_url.value
+        self.api_url: str = str(api_url).rstrip("/")
 
     def _call_api(self, url: str) -> dict:
         """Calls the LibreLinkUp API and returns the response
@@ -143,7 +146,8 @@ class PyLibreLinkUp:
         # to accept terms or privacy policy.
         data_dict = data.get("data", {})
         if data_dict.get("redirect", False):
-            raise RedirectError(APIUrl.from_string(data_dict["region"].upper()))
+            region = data_dict["region"]
+            raise RedirectError(region, resolve_region_host(region, HEADERS))
 
         match data_dict.get("step", {}).get("type"):
             case "tou":
