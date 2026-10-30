@@ -7,6 +7,12 @@ __all__ = ["APIUrl"]
 
 
 class APIUrl(StrEnum):
+    """Known LibreLinkUp regional API hosts.
+
+    Redirects are resolved from the regional map published by the LibreLinkUp API; these values are used
+    as the default host and as a fallback when the map is unavailable or lacks a region.
+    """
+
     EU = "https://api-eu.libreview.io"
     EU2 = "https://api-eu2.libreview.io"
     US = "https://api-us.libreview.io"
