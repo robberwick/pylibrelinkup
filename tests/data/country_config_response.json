@@ -1,0 +1,11 @@
+{
+  "status": 0,
+  "data": {
+    "regionalMap": {
+      "us": {"lslApi": "https://api-us.libreview.io/"},
+      "eu": {"lslApi": "https://api-eu.libreview.io/"},
+      "eu2": {"lslApi": "https://api-eu2.libreview.io/"},
+      "xx": {"lslApi": "https://api-xx.libreview.io/"}
+    }
+  }
+}

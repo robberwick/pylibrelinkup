@@ -6,6 +6,12 @@ import pytest
 import responses
 
 from pylibrelinkup import APIUrl, PyLibreLinkUp
+from pylibrelinkup.regions import clear_regional_hosts_cache
+
+
+@pytest.fixture(autouse=True)
+def clear_region_cache():
+    clear_regional_hosts_cache()
 
 
 @pytest.fixture
