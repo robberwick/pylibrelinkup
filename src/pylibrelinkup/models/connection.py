@@ -12,7 +12,8 @@ from .hardware import ActiveSensor, PatientDevice, Sensor
 
 __all__ = ["GraphResponse", "LogbookResponse"]
 
-from ..exceptions import PatientNotFoundError
+from ..api_url import APIUrl
+from ..exceptions import PatientNotFoundError, RedirectError
 
 
 class Connection(ConfigBaseModel):
@@ -68,14 +69,17 @@ class APIResponse(ConfigBaseModel):
     def validate_api_response(
         cls, data: Any, handler: ModelWrapValidatorHandler[Self]
     ) -> Self:
+        # Redirect payloads fail model validation, but that's coincidental — check
+        # explicitly so the behaviour doesn't silently break if the model changes.
+        if isinstance(data, dict):
+            match data:
+                case {"data": {"redirect": True, "region": str(region)}}:
+                    raise RedirectError(APIUrl.from_string(region))
         try:
             return handler(data)
         except ValidationError:
             # TODO: Add logging
-            # TODO: Extend this to handle other exceptions e.g. redirections, terms of use, etc.
-            # if the data is a dictionary, and it should contain an "error" and "status" key
-            # match against the status to determine what exception to raise
-            # if there's no match, raise the original exception
+            # TODO: Extend this to handle other exceptions e.g. terms of use, etc.
             if isinstance(data, dict):
                 match data:
                     case {
